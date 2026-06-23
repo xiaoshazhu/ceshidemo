@@ -139,16 +139,10 @@ async function fetchRealDoudianData(cookie, shopId, syncModule, configOrDateRang
     formParams.append('end_time', String(endTimeMs));
     requestBody = formParams.toString();
   } else if (syncModule === 'qianchuan_video_promote') {
-    requestUrl = `https://qianchuan.jinritemai.com/ad/api/data/v1/common/statQuery?reqFrom=roi2_material_list&gfversion=1.0.0.5718&aavid=${shopId}`;
+    requestUrl = `https://qianchuan.jinritemai.com/ad/api/data/v1/common/statQuery?reqFrom=video-filter-list&gfversion=1.0.0.5718&aavid=${shopId}&start_date=${startDateStr}&end_date=${endDateStr}&page=${pageNum}&page_size=50`;
     headers['Referer'] = 'https://qianchuan.jinritemai.com/';
-    requestMethod = 'POST';
-    requestBody = JSON.stringify({
-      aavid: parseInt(shopId, 10) || 0,
-      start_date: startDateStr,
-      end_date: endDateStr,
-      page: pageNum,
-      page_size: 50
-    });
+    requestMethod = 'GET';
+    requestBody = null;
   } else {
     // 默认：订单发货 -> 订单管理 (order_report 等)
     requestUrl = `https://fxg.jinritemai.com/ffa/g/order/searchList`;
