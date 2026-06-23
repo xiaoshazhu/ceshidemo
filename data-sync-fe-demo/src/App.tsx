@@ -4,7 +4,7 @@
  */
 
 import './App.css';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { bitable } from '@lark-base-open/connector-api';
 import { 
   Button, 
@@ -104,7 +104,41 @@ interface Account {
   shopId?: string;
   isActive?: boolean;
   module?: string;
+  platform?: string;
 }
+
+interface PlatformConfig {
+  key: string;
+  name: string;
+  desc: string;
+  icon: string;
+  url: string;
+}
+
+const PLATFORMS_MAP: PlatformConfig[] = [
+  { key: 'douyin', name: '抖音电商', desc: '包含抖店、电商罗盘模块', icon: '🎵', url: 'https://fxg.jinritemai.com/login/common?extra=%7B%22target_url%22%3A%22https%3A%2F%2Ffxg.jinritemai.com%2Fffa%2Fmshop%2Fhomepage%2Findex%22%7D' },
+  { key: 'alimama', name: '阿里妈妈', desc: '包含淘宝联盟、万相台投放模块', icon: '🌸', url: 'https://login.taobao.com/member/login.jhtml?redirectURL=https%3A%2F%2Fwww.alimama.com' },
+  { key: 'compass', name: '电商罗盘', desc: '包含抖音电商罗盘核心数据', icon: '🧭', url: 'https://compass.jinritemai.com/' },
+  { key: 'jingmai', name: '京麦 (金麦)', desc: '京东商家开放平台与后台数据', icon: '📦', url: 'https://passport.shop.jd.com/' },
+  { key: 'qianchuan', name: '巨量千川', desc: '巨量千川广告投放与素材分析', icon: '🌊', url: 'https://qianchuan.jinritemai.com/' },
+  { key: 'jushuitan', name: '聚水潭 ERP', desc: '订单、出入库与商品库存数据', icon: '💧', url: 'https://www.jushuitan.com/login.html' },
+  { key: 'qianniu', name: '千牛工作台', desc: '微信/支付宝聚合账单与店铺管理', icon: '🐂', url: 'https://qn.taobao.com/' },
+  { key: 'xiaohongshu', name: '小红书', desc: '包含小红书蒲公英、千帆平台', icon: '📕', url: 'https://ark.xiaohongshu.com/' }
+];
+
+const getPlaceholder = (pKey: string) => {
+  switch (pKey) {
+    case 'douyin': return '请输入数字格式的抖音店铺 ID，例如：982734';
+    case 'alimama': return '请输入阿里妈妈/淘宝账号 ID，例如：8821734';
+    case 'compass': return '请输入电商罗盘店铺 ID，例如：982734';
+    case 'jingmai': return '请输入京麦/京东店铺 ID，例如：100028';
+    case 'qianchuan': return '请输入巨量千川广告主 ID，例如：16892734';
+    case 'jushuitan': return '请输入聚水潭商户/店铺 ID，例如：502934';
+    case 'qianniu': return '请输入千牛店铺 ID，例如：682734';
+    case 'xiaohongshu': return '请输入小红书店铺 ID，例如：8349273';
+    default: return '请输入店铺 ID / 账号 ID';
+  }
+};
 
 /**
  * 功能描述：主应用入口组件，负责渲染飞书连接器配置面板，处理左侧菜单滚动监听、账号两步式绑定以及模式 B 网页登录捕获逻辑。
@@ -202,6 +236,22 @@ export default function App(): JSX.Element {
     fetchSharedAccounts();
   }, []);
 
+  // 监听 platform 发生切换，自动切换参数和模块的默认激活状态
+  useEffect(() => {
+    const activeAcc = accounts.find((a: any) => a.isActive && a.platform === platform);
+    if (activeAcc) {
+      setShopIdParam(activeAcc.shopId || '');
+      setSyncModule(activeAcc.module || 'order_report');
+    } else {
+      setShopIdParam('');
+      if (platform === 'qianchuan') {
+        setSyncModule('qianchuan_material');
+      } else {
+        setSyncModule('order_report');
+      }
+    }
+  }, [platform, accounts]);
+
   // 监听 syncModule 的变化以动态更新源字段与飞书多维表格列的默认映射
   useEffect(() => {
     const fields = MODULE_FIELDS[syncModule] || MODULE_FIELDS.account_center || MODULE_FIELDS.order_report;
@@ -297,20 +347,10 @@ export default function App(): JSX.Element {
           cookie: item.cookie,
           shopId: item.shopId,
           isActive: item.is_active === 1,
-          module: item.module
+          module: item.module,
+          platform: item.platform
         }));
         setAccounts(mappedList);
-        
-        // 自动将当前活跃账号的 shopId 与绑定动作/模块回填到输入表单中
-        const activeAcc = mappedList.find((a: any) => a.isActive);
-        if (activeAcc) {
-          if (activeAcc.shopId) {
-            setShopIdParam(activeAcc.shopId);
-          }
-          if (activeAcc.module) {
-            setSyncModule(activeAcc.module);
-          }
-        }
       }
     } catch (e) {
       console.error('从 SQLite 数据库获取账户列表失败', e);
@@ -374,12 +414,13 @@ export default function App(): JSX.Element {
           setIsPolling(false);
           setCapturedCookie(data.cookie);
           setCapturedShopId(data.shopId || '');
-          setCapturedShopName(data.shopName || '已拦截抖店');
+          const pName = PLATFORMS_MAP.find(p => p.key === platform)?.name || '抖店';
+          setCapturedShopName(data.shopName || `已拦截${pName}`);
           if (data.module) {
             setSyncModule(data.module);
-            message.success(`🎉 成功从页面拦截到抖店凭据及 [${data.module === 'order_report' ? '订单流水' : '数据罗盘'}] 动作！`);
+            message.success(`🎉 成功从页面拦截到${pName}凭据及 [${data.module === 'order_report' ? '订单流水' : '数据罗盘'}] 动作！`);
           } else {
-            message.success(`🎉 成功拦截到抖店登录凭据！店铺名: ${data.shopName || '未命名'}`);
+            message.success(`🎉 成功拦截到${pName}登录凭据！店铺名: ${data.shopName || '未命名'}`);
           }
         }
       }
@@ -423,10 +464,11 @@ export default function App(): JSX.Element {
    * @return {void} 无返回值
    */
   const handleStartSimulatedLogin = (): void => {
-    const targetUrl = 'https://fxg.jinritemai.com/login/common?extra=%7B%22target_url%22%3A%22https%3A%2F%2Ffxg.jinritemai.com%2Fffa%2Fmshop%2Fhomepage%2Findex%22%7D';
+    const selectedPlatform = PLATFORMS_MAP.find(p => p.key === platform) || PLATFORMS_MAP[0];
+    const targetUrl = selectedPlatform.url;
     window.open(targetUrl, '_blank', 'width=800,height=600,left=200,top=100');
     setIsPolling(true);
-    message.loading({ content: '正在轮询捕获抖音登录凭证，请在新页面中登录并运行书签脚本...', key: 'poll', duration: 0 });
+    message.loading({ content: `正在轮询捕获 ${selectedPlatform.name} 登录凭证，请在新页面中登录并运行书签脚本...`, key: 'poll', duration: 0 });
   };
 
   /**
@@ -447,7 +489,8 @@ export default function App(): JSX.Element {
         name: `${selected.name} (企业共享)`,
         mode: '企业共享免密',
         status: 'active',
-        module: syncModule
+        module: syncModule,
+        platform: platform
       };
     } else {
       // 绑定自建新账号
@@ -484,18 +527,20 @@ export default function App(): JSX.Element {
         
         let displayShopId = finalShopId;
         if (!displayShopId) {
-          const match = finalCookie.match(/shop_id=(\d+)/) || finalCookie.match(/shop_id_str=(\d+)/);
+          const match = finalCookie.match(/(?:shop_id|shop_id_str|member_id|seller_id|userId)=(\d+)/);
           displayShopId = match ? match[1] : '手动录入';
         }
 
+        const selectedPlatform = PLATFORMS_MAP.find(p => p.key === platform) || PLATFORMS_MAP[0];
         newAcc = {
           key: `self_${Date.now()}`,
-          name: `${finalShopName || '抖店模拟登录账号'} (ID: ${displayShopId})`,
+          name: `${finalShopName || (selectedPlatform.name + '模拟登录账号')} (ID: ${displayShopId})`,
           mode: '模拟登录',
           status: 'active',
           cookie: finalCookie,
           shopId: displayShopId,
-          module: syncModule
+          module: syncModule,
+          platform: platform
         };
       } else {
         // API 模式
@@ -508,7 +553,8 @@ export default function App(): JSX.Element {
           name: `官方接口账户 (Key: ${appKey.substring(0, 5)}...)`,
           mode: '官方 API',
           status: 'active',
-          module: syncModule
+          module: syncModule,
+          platform: platform
         };
       }
     }
@@ -526,7 +572,8 @@ export default function App(): JSX.Element {
             cookie: newAcc.cookie || '',
             shopId: newAcc.shopId || '',
             is_active: isNewAccountActive ? 1 : 0,
-            module: newAcc.module || ''
+            module: newAcc.module || '',
+            platform: platform
           })
         });
         message.success('新账号已成功绑定并存盘！');
@@ -601,7 +648,7 @@ export default function App(): JSX.Element {
       return;
     }
 
-    const activeAccount = accounts.find(a => a.isActive) || accounts[0];
+    const activeAccount = accounts.find(a => a.isActive && a.platform === platform) || accounts.find(a => a.platform === platform) || accounts[0];
 
     const config = {
       platform,
@@ -617,7 +664,7 @@ export default function App(): JSX.Element {
       customEndDate,
       accountInfo: {
         mode: activeAccount ? activeAccount.mode : '模拟登录',
-        name: activeAccount ? activeAccount.name : '抖店模拟账号',
+        name: activeAccount ? activeAccount.name : `${PLATFORMS_MAP.find(p => p.key === platform)?.name || '抖店'}模拟账号`,
         cookie: (activeAccount && activeAccount.cookie) || pastedCookie,
         shopId: (activeAccount && activeAccount.shopId) || shopIdParam
       }
@@ -645,8 +692,46 @@ export default function App(): JSX.Element {
     }
   };
 
-  // 抖音书签脚本代码
-  const bookmarkCode = `javascript:(function(){var cookie=document.cookie;var shopIdMatch=cookie.match(/shop_id=(\\d+)/)||cookie.match(/shop_id_str=(\\d+)/);var shopId=shopIdMatch?shopIdMatch[1]:'';if(!shopId){var match=window.location.href.match(/shop_id=(\\d+)/);if(match)shopId=match[1]}if(!shopId){shopId=prompt("请输入您的抖音店铺 ID / Shop ID (必填):")}if(!shopId)return alert("获取店铺 ID 失败，取消上报！");var module="order_report";if(window.location.href.indexOf("/compass/product")!==-1){module="compass_product"}else if(window.location.href.indexOf("/compass")!==-1){module="compass_trade"}var serverUrl="https://blotless-unimmanent-marti.ngrok-free.dev/api/v1/connector/sources/login-capture";var payload={cookie:cookie,shopId:shopId,shopName:document.title||"抖店商家店铺",module:module,userAgent:navigator.userAgent};fetch(serverUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).then(function(res){return res.json()}).then(function(data){alert("🎉 抖音登录凭据与检测模块 ["+(module==="order_report"?"订单流水":module==="compass_trade"?"数据大盘":"商品核心")+"] 已成功上报并同步！您可以返回多维表格配置页。")}).catch(function(err){alert("上报失败: "+err.message)})})();`;
+  // 动态生成的书签脚本代码
+  const bookmarkCode = useMemo(() => {
+    const selectedPlatform = PLATFORMS_MAP.find(p => p.key === platform) || PLATFORMS_MAP[0];
+    const hostOrigin = window.location.origin;
+    const code = `javascript:(function(){
+      var cookie = document.cookie;
+      var shopId = '';
+      var match = cookie.match(/shop_id=(\\d+)/) || cookie.match(/shop_id_str=(\\d+)/) || cookie.match(/member_id=(\\d+)/) || cookie.match(/seller_id=(\\d+)/) || cookie.match(/userId=(\\d+)/);
+      if (match) {
+        shopId = match[1];
+      }
+      if (!shopId) {
+        var urlMatch = window.location.href.match(/[?&](shopId|shop_id|sellerId|seller_id|advertiserId|advertiser_id|userId)=(\\d+)/);
+        if (urlMatch) shopId = urlMatch[2];
+      }
+      if (!shopId) {
+        shopId = prompt("请输入您的 ${selectedPlatform.name} 店铺 ID / 账号 ID (选填/必填):");
+      }
+      var serverUrl = "${hostOrigin}/api/v1/connector/sources/login-capture";
+      var payload = {
+        cookie: cookie,
+        shopId: shopId || "default",
+        shopName: document.title || "${selectedPlatform.name}店铺",
+        module: "${syncModule}",
+        userAgent: navigator.userAgent
+      };
+      fetch(serverUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).then(function(res) {
+        return res.json();
+      }).then(function(data) {
+        alert("🎉 ${selectedPlatform.name} 登录凭证上报并同步成功！您可以返回多维表格配置页。");
+      }).catch(function(err) {
+        alert("上报失败: " + err.message);
+      });
+    })();`;
+    return code.replace(/\r?\n\s*/g, '');
+  }, [platform, syncModule]);
 
   return (
     <div className="connector-container">
@@ -692,46 +777,19 @@ export default function App(): JSX.Element {
         <section className="form-section" id="section-datasource">
           <div className="section-header">1. 对接数据源平台</div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
-            <div 
-              className={`platform-card ${platform === 'douyin' ? 'selected' : ''}`}
-              onClick={() => setPlatform('douyin')}
-            >
-              <span style={{ fontSize: '24px' }}>🎵</span>
-              <div>
-                <div style={{ fontWeight: 600 }}>抖音电商</div>
-                <div style={{ fontSize: '11px', color: '#8c8c8c' }}>包含抖店、电商罗盘模块</div>
-              </div>
-            </div>
-            
-            <Tooltip title="小红书平台接口模块暂整改中，请先使用抖音通道进行测试">
-              <div className="platform-card disabled">
-                <span style={{ fontSize: '24px' }}>📕</span>
+            {PLATFORMS_MAP.map(p => (
+              <div 
+                key={p.key}
+                className={`platform-card ${platform === p.key ? 'selected' : ''}`}
+                onClick={() => setPlatform(p.key)}
+              >
+                <span style={{ fontSize: '24px' }}>{p.icon}</span>
                 <div>
-                  <div style={{ fontWeight: 600 }}>小红书</div>
-                  <div style={{ fontSize: '11px', color: '#8c8c8c' }}>包含蒲公英、千帆平台 (不可选)</div>
+                  <div style={{ fontWeight: 600 }}>{p.name}</div>
+                  <div style={{ fontSize: '11px', color: '#8c8c8c' }}>{p.desc}</div>
                 </div>
               </div>
-            </Tooltip>
-
-            <Tooltip title="暂不可选">
-              <div className="platform-card disabled">
-                <span style={{ fontSize: '24px' }}>📦</span>
-                <div>
-                  <div style={{ fontWeight: 600 }}>聚水潭 ERP</div>
-                  <div style={{ fontSize: '11px', color: '#8c8c8c' }}>发货、出库与退货 (不可选)</div>
-                </div>
-              </div>
-            </Tooltip>
-
-            <Tooltip title="暂不可选">
-              <div className="platform-card disabled">
-                <span style={{ fontSize: '24px' }}>🐂</span>
-                <div>
-                  <div style={{ fontWeight: 600 }}>千牛工作台</div>
-                  <div style={{ fontSize: '11px', color: '#8c8c8c' }}>微信/支付宝聚合账单 (不可选)</div>
-                </div>
-              </div>
-            </Tooltip>
+            ))}
           </div>
         </section>
 
@@ -744,7 +802,7 @@ export default function App(): JSX.Element {
             </Button>
           </div>
           <Table 
-            dataSource={accounts} 
+            dataSource={accounts.filter(a => a.platform === platform)} 
             pagination={false} 
             size="small"
             columns={[
@@ -854,12 +912,12 @@ export default function App(): JSX.Element {
             </Form.Item>
             
             <Form.Item 
-              label="抖音店铺 ID (Shop ID)" 
+              label={`${PLATFORMS_MAP.find(p => p.key === platform)?.name || '平台'} 店铺 ID (Shop ID / Account ID)`} 
               required 
               tooltip="模式 B 请求时需要拼接店铺主键。系统检测到网页登录成功后会自动填入该项。"
             >
               <Input 
-                placeholder="请输入数字格式的抖音店铺 ID，例如：982734" 
+                placeholder={getPlaceholder(platform)} 
                 value={shopIdParam}
                 onChange={(e) => setShopIdParam(e.target.value)}
               />
@@ -1184,7 +1242,7 @@ export default function App(): JSX.Element {
                         <div style={{ fontSize: '12px', color: '#595959', marginBottom: '8px', lineHeight: '1.4' }}>
                           1. 显示浏览器书签栏（快捷键：Ctrl/Cmd + Shift + B）。<br />
                           2. 直接 <b>拖拽</b> 下方黄色按钮至您的浏览器书签栏。<br />
-                          3. 登录抖店后台主页后，<b>点击该书签</b>即可自动上报并绑定。
+                          3. 登录 {PLATFORMS_MAP.find(p => p.key === platform)?.name || '商家'} 后台主页后，<b>点击该书签</b>即可自动上报并绑定。
                         </div>
                         <div style={{ marginBottom: '12px' }}>
                           <a 
@@ -1206,7 +1264,7 @@ export default function App(): JSX.Element {
                               message.info('💡 请将此按钮直接拖动到浏览器书签栏上保存。');
                             }}
                           >
-                            🖱️ 拖拽此按钮至书签栏 (抖音凭证捕获助手)
+                            🖱️ 拖拽此按钮至书签栏 ({PLATFORMS_MAP.find(p => p.key === platform)?.name || '商家'}凭证捕获助手)
                           </a>
                         </div>
                         <div style={{ fontSize: '12px', color: '#8c8c8c', marginBottom: '4px' }}>

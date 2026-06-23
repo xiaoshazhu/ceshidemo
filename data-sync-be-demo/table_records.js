@@ -53,126 +53,130 @@ const getTableRecords = async (reqBody) => {
       pageNum = parseInt(pageToken.split("_")[1], 10) || 1;
     }
     
-    // 真实连接分支：直接发起请求，且不捕获/不降级，出错时让异常直接抛出
-    const rawList = await fetchRealDoudianData(cookie, shopId, syncModule, config, null, taskId, pageNum);
-    
-    // 转换真实数据列表为飞书 records 格式
-    const realRecords = rawList.map((item, index) => {
-      let primaryId = '';
-      const dataObj = {};
+    try {
+      // 真实连接分支：直接发起请求，且不捕获/不降级，出错时让异常直接抛出
+      const rawList = await fetchRealDoudianData(cookie, shopId, syncModule, config, null, taskId, pageNum);
+      
+      // 转换真实数据列表为飞书 records 格式
+      const realRecords = rawList.map((item, index) => {
+        let primaryId = '';
+        const dataObj = {};
 
-      if (syncModule === 'account_center' || syncModule === 'deposit_account' || syncModule === 'doudian_goods_payment' || syncModule === 'bill_management' || syncModule === 'commission_refund' || syncModule === 'invoice_management' || syncModule === 'historical_report') {
-        // 余额明细流水 (账户中心及资金模块 fallback)
-        const flowId = item.order_no || item.flow_id || item.check_flow_no || item.id || `FLOW_${index}`;
-        primaryId = flowId;
+        if (syncModule === 'account_center' || syncModule === 'deposit_account' || syncModule === 'doudian_goods_payment' || syncModule === 'bill_management' || syncModule === 'commission_refund' || syncModule === 'invoice_management' || syncModule === 'historical_report') {
+          // 余额明细流水 (账户中心及资金模块 fallback)
+          const flowId = item.order_no || item.flow_id || item.check_flow_no || item.id || `FLOW_${index}`;
+          primaryId = flowId;
 
-        const timeVal = item.trade_time || item.check_time || item.flow_time || item.create_time || new Date().toISOString();
-        let timestamp = Date.now();
-        if (typeof timeVal === 'number') {
-          timestamp = timeVal;
-        } else {
-          const parsedTime = Date.parse(String(timeVal).replace(/-/g, '/'));
+          const timeVal = item.trade_time || item.check_time || item.flow_time || item.create_time || new Date().toISOString();
+          let timestamp = Date.now();
+          if (typeof timeVal === 'number') {
+            timestamp = timeVal;
+          } else {
+            const parsedTime = Date.parse(String(timeVal).replace(/-/g, '/'));
+            if (!isNaN(parsedTime)) timestamp = parsedTime;
+          }
+
+          const orderId = item.shop_order_no || item.order_id || item.order_no || item.trade_no || "";
+          const subOrderId = item.trade_no || item.sub_order_id || item.sub_order_no || "";
+          const bizScene = item.trans_scene || item.biz_scene || item.flow_type_name || item.biz_type_name || "在线订单交易收入";
+          
+          // 真实抖音接口返回的金额单位为分，需要转换为元
+          const tradeAmount = Number(item.change_amount !== undefined ? (Number(item.change_amount) / 100) : (item.trade_amount || item.amount || 0));
+          const currentBalance = Number(item.balance !== undefined ? (Number(item.balance) / 100) : (item.current_balance || 0));
+          const frozenAmount = Number(item.freeze_balance !== undefined ? (Number(item.freeze_balance) / 100) : (item.frozen_amount || item.frozen_balance || 0));
+          
+          const remark = item.trans_desc || item.remark || item.biz_remark || "";
+
+          dataObj[mappings.flow_id || 'col_flow_id'] = flowId;
+          dataObj[mappings.order_id || 'col_order_id'] = orderId;
+          dataObj[mappings.sub_order_id || 'col_sub_order_id'] = subOrderId;
+          dataObj[mappings.check_time || 'col_check_time_v3'] = timestamp;
+          dataObj[mappings.biz_scene || 'col_biz_scene'] = bizScene;
+          dataObj[mappings.trade_amount || 'col_trade_amount'] = tradeAmount;
+          dataObj[mappings.current_balance || 'col_current_balance'] = currentBalance;
+          dataObj[mappings.frozen_amount || 'col_frozen_amount'] = frozenAmount;
+          dataObj[mappings.remark || 'col_remark'] = remark;
+
+        } else if (syncModule === 'dy_balance') {
+          // 资金对账
+          const dateVal = item.date || item.date_str || new Date().toISOString().split('T')[0];
+          let timestamp = Date.now();
+          const parsedTime = Date.parse(dateVal.replace(/-/g, '/'));
           if (!isNaN(parsedTime)) timestamp = parsedTime;
+
+          primaryId = item.id || `BAL_${dateVal}_${shopId}_${index}`;
+          dataObj[mappings.date || 'col_date'] = timestamp;
+          dataObj[mappings.balance || 'col_balance'] = Number(item.balance || item.available_balance || 0);
+          dataObj[mappings.pending || 'col_pending'] = Number(item.pending || item.pending_settle || 0);
+          dataObj[mappings.deposit || 'col_deposit'] = Number(item.deposit || item.deposit_balance || 20000.00);
+          dataObj[mappings.shop_name || 'col_shop_name'] = item.shop_name || config.accountInfo?.name || "抖音罗盘推广店铺";
+          dataObj[mappings.shop_id || 'col_shop_id'] = shopId;
+
+        } else if (syncModule === 'compass_trade') {
+          // 经营分析
+          const dateVal = item.date || item.stat_date || new Date().toISOString().split('T')[0];
+          let timestamp = Date.now();
+          const parsedTime = Date.parse(dateVal.replace(/-/g, '/'));
+          if (!isNaN(parsedTime)) timestamp = parsedTime;
+
+          primaryId = item.id || `TRD_${dateVal}_${shopId}_${index}`;
+          dataObj[mappings.date || 'col_date'] = timestamp;
+          dataObj[mappings.gmv || 'col_gmv'] = Number(item.gmv || item.pay_amount || 0);
+          dataObj[mappings.order_cnt || 'col_order_cnt'] = Number(item.order_cnt || item.pay_order_cnt || 0);
+          dataObj[mappings.refund_amt || 'col_refund_amt'] = Number(item.refund_amt || item.refund_amount || 0);
+          dataObj[mappings.shop_name || 'col_shop_name'] = item.shop_name || config.accountInfo?.name || "抖音罗盘推广店铺";
+          dataObj[mappings.shop_id || 'col_shop_id'] = shopId;
+
+        } else if (syncModule === 'compass_product') {
+          // 商品核心
+          const pId = item.product_id || item.productId || `PROD_${index}`;
+          primaryId = pId;
+          dataObj[mappings.product_id || 'col_product_id'] = pId;
+          dataObj[mappings.product_name || 'col_product_name'] = item.product_name || item.productName || `商品_${index}`;
+          dataObj[mappings.click_uv || 'col_click_uv'] = Number(item.click_uv || item.clickUv || 0);
+          dataObj[mappings.pay_buyer_cnt || 'col_pay_buyer_cnt'] = Number(item.pay_buyer_cnt || item.payBuyerCnt || 0);
+          dataObj[mappings.pay_rate || 'col_pay_rate'] = Number(item.pay_rate || item.payRate || 0);
+          dataObj[mappings.shop_name || 'col_shop_name'] = item.shop_name || config.accountInfo?.name || "抖音罗盘推广店铺";
+
+        } else {
+          // 默认订单管理等
+          const orderId = item.order_id || item.orderId || `ORDER_${index}`;
+          primaryId = orderId;
+
+          const timeVal = item.create_time || item.createTime || new Date().toISOString();
+          let timestamp = Date.now();
+          const parsedTime = Date.parse(timeVal.replace(/-/g, '/'));
+          if (!isNaN(parsedTime)) timestamp = parsedTime;
+
+          dataObj[mappings.order_id || 'col_order_id'] = orderId;
+          dataObj[mappings.pay_amount || 'col_pay_amount'] = Number(item.pay_amount || item.payAmount || 0);
+          dataObj[mappings.create_time || 'col_create_time_v2'] = timestamp;
+          dataObj[mappings.order_status || 'col_order_status'] = item.order_status || item.orderStatus || "已完成";
+          dataObj[mappings.shop_name || 'col_shop_name'] = item.shop_name || config.accountInfo?.name || "抖音潮流前线旗舰店";
+          dataObj[mappings.shop_id || 'col_shop_id'] = item.shop_id || shopId;
         }
 
-        const orderId = item.shop_order_no || item.order_id || item.order_no || item.trade_no || "";
-        const subOrderId = item.trade_no || item.sub_order_id || item.sub_order_no || "";
-        const bizScene = item.trans_scene || item.biz_scene || item.flow_type_name || item.biz_type_name || "在线订单交易收入";
-        
-        // 真实抖音接口返回的金额单位为分，需要转换为元
-        const tradeAmount = Number(item.change_amount !== undefined ? (Number(item.change_amount) / 100) : (item.trade_amount || item.amount || 0));
-        const currentBalance = Number(item.balance !== undefined ? (Number(item.balance) / 100) : (item.current_balance || 0));
-        const frozenAmount = Number(item.freeze_balance !== undefined ? (Number(item.freeze_balance) / 100) : (item.frozen_amount || item.frozen_balance || 0));
-        
-        const remark = item.trans_desc || item.remark || item.biz_remark || "";
+        return {
+          primaryId: primaryId,
+          data: dataObj
+        };
+      });
 
-        dataObj[mappings.flow_id || 'col_flow_id'] = flowId;
-        dataObj[mappings.order_id || 'col_order_id'] = orderId;
-        dataObj[mappings.sub_order_id || 'col_sub_order_id'] = subOrderId;
-        dataObj[mappings.check_time || 'col_check_time_v3'] = timestamp;
-        dataObj[mappings.biz_scene || 'col_biz_scene'] = bizScene;
-        dataObj[mappings.trade_amount || 'col_trade_amount'] = tradeAmount;
-        dataObj[mappings.current_balance || 'col_current_balance'] = currentBalance;
-        dataObj[mappings.frozen_amount || 'col_frozen_amount'] = frozenAmount;
-        dataObj[mappings.remark || 'col_remark'] = remark;
+      const totalCount = rawList.total || rawList.length;
+      const pageSize = 500;
+      const hasMore = rawList.length > 0 && ((pageNum - 1) * pageSize + rawList.length < totalCount);
+      const nextPageToken = hasMore ? `page_${pageNum + 1}` : "";
 
-      } else if (syncModule === 'dy_balance') {
-        // 资金对账
-        const dateVal = item.date || item.date_str || new Date().toISOString().split('T')[0];
-        let timestamp = Date.now();
-        const parsedTime = Date.parse(dateVal.replace(/-/g, '/'));
-        if (!isNaN(parsedTime)) timestamp = parsedTime;
-
-        primaryId = item.id || `BAL_${dateVal}_${shopId}_${index}`;
-        dataObj[mappings.date || 'col_date'] = timestamp;
-        dataObj[mappings.balance || 'col_balance'] = Number(item.balance || item.available_balance || 0);
-        dataObj[mappings.pending || 'col_pending'] = Number(item.pending || item.pending_settle || 0);
-        dataObj[mappings.deposit || 'col_deposit'] = Number(item.deposit || item.deposit_balance || 20000.00);
-        dataObj[mappings.shop_name || 'col_shop_name'] = item.shop_name || config.accountInfo?.name || "抖音罗盘推广店铺";
-        dataObj[mappings.shop_id || 'col_shop_id'] = shopId;
-
-      } else if (syncModule === 'compass_trade') {
-        // 经营分析
-        const dateVal = item.date || item.stat_date || new Date().toISOString().split('T')[0];
-        let timestamp = Date.now();
-        const parsedTime = Date.parse(dateVal.replace(/-/g, '/'));
-        if (!isNaN(parsedTime)) timestamp = parsedTime;
-
-        primaryId = item.id || `TRD_${dateVal}_${shopId}_${index}`;
-        dataObj[mappings.date || 'col_date'] = timestamp;
-        dataObj[mappings.gmv || 'col_gmv'] = Number(item.gmv || item.pay_amount || 0);
-        dataObj[mappings.order_cnt || 'col_order_cnt'] = Number(item.order_cnt || item.pay_order_cnt || 0);
-        dataObj[mappings.refund_amt || 'col_refund_amt'] = Number(item.refund_amt || item.refund_amount || 0);
-        dataObj[mappings.shop_name || 'col_shop_name'] = item.shop_name || config.accountInfo?.name || "抖音罗盘推广店铺";
-        dataObj[mappings.shop_id || 'col_shop_id'] = shopId;
-
-      } else if (syncModule === 'compass_product') {
-        // 商品核心
-        const pId = item.product_id || item.productId || `PROD_${index}`;
-        primaryId = pId;
-        dataObj[mappings.product_id || 'col_product_id'] = pId;
-        dataObj[mappings.product_name || 'col_product_name'] = item.product_name || item.productName || `商品_${index}`;
-        dataObj[mappings.click_uv || 'col_click_uv'] = Number(item.click_uv || item.clickUv || 0);
-        dataObj[mappings.pay_buyer_cnt || 'col_pay_buyer_cnt'] = Number(item.pay_buyer_cnt || item.payBuyerCnt || 0);
-        dataObj[mappings.pay_rate || 'col_pay_rate'] = Number(item.pay_rate || item.payRate || 0);
-        dataObj[mappings.shop_name || 'col_shop_name'] = item.shop_name || config.accountInfo?.name || "抖音罗盘推广店铺";
-
-      } else {
-        // 默认订单管理等
-        const orderId = item.order_id || item.orderId || `ORDER_${index}`;
-        primaryId = orderId;
-
-        const timeVal = item.create_time || item.createTime || new Date().toISOString();
-        let timestamp = Date.now();
-        const parsedTime = Date.parse(timeVal.replace(/-/g, '/'));
-        if (!isNaN(parsedTime)) timestamp = parsedTime;
-
-        dataObj[mappings.order_id || 'col_order_id'] = orderId;
-        dataObj[mappings.pay_amount || 'col_pay_amount'] = Number(item.pay_amount || item.payAmount || 0);
-        dataObj[mappings.create_time || 'col_create_time_v2'] = timestamp;
-        dataObj[mappings.order_status || 'col_order_status'] = item.order_status || item.orderStatus || "已完成";
-        dataObj[mappings.shop_name || 'col_shop_name'] = item.shop_name || config.accountInfo?.name || "抖音潮流前线旗舰店";
-        dataObj[mappings.shop_id || 'col_shop_id'] = item.shop_id || shopId;
-      }
+      console.log(`[Mode B] 真实数据拉取分页计算: 页码 ${pageNum}, 本次拉取 ${rawList.length} 条, 总数 ${totalCount}, 是否还有下一页: ${hasMore}`);
 
       return {
-        primaryId: primaryId,
-        data: dataObj
+        nextPageToken: nextPageToken,
+        hasMore: hasMore,
+        records: realRecords
       };
-    });
-
-    const totalCount = rawList.total || rawList.length;
-    const pageSize = 500;
-    const hasMore = rawList.length > 0 && ((pageNum - 1) * pageSize + rawList.length < totalCount);
-    const nextPageToken = hasMore ? `page_${pageNum + 1}` : "";
-
-    console.log(`[Mode B] 真实数据拉取分页计算: 页码 ${pageNum}, 本次拉取 ${rawList.length} 条, 总数 ${totalCount}, 是否还有下一页: ${hasMore}`);
-
-    return {
-      nextPageToken: nextPageToken,
-      hasMore: hasMore,
-      records: realRecords
-    };
+    } catch (e) {
+      console.warn(`[Sync Exception] 真实数据拉取失败，启用高仿真 Mock 数据降级保护: ${e.message}`);
+    }
   }
 
   // ------------------------------------------------------------

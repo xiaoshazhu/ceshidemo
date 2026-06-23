@@ -290,7 +290,7 @@ app.post("/api/v1/sync/tasks/save", async (req, res) => {
   // 1. 获取当前活跃账号并更新其绑定的模块
   try {
     const accountsList = await getAccounts();
-    const activeAccount = accountsList.find(a => a.is_active === 1);
+    const activeAccount = accountsList.find(a => a.is_active === 1 && a.platform === req.body.platform);
     if (activeAccount && syncModule) {
       await updateAccountModule(activeAccount.key, syncModule);
       console.log(`✅ 已同步更新当前活跃账号 [${activeAccount.name}] 对应的模块为: ${syncModule}`);

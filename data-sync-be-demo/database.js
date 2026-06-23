@@ -77,10 +77,12 @@ function initDb() {
         if (err) {
           reject(err);
         } else {
-          // 尝试升级旧 accounts 表结构以支持 module 字段
+          // 尝试升级旧 accounts 表结构以支持 module 与 platform 字段
           db.run("ALTER TABLE accounts ADD COLUMN module TEXT", () => {
-            // 忽略字段已存在的报错，正常 resolve
-            resolve();
+            db.run("ALTER TABLE accounts ADD COLUMN platform TEXT", () => {
+              // 忽略已存在的报错，正常 resolve
+              resolve();
+            });
           });
         }
       });
@@ -98,8 +100,8 @@ function saveAccount(account) {
     db.serialize(() => {
       const insertAccount = () => {
         db.run(
-          `INSERT OR REPLACE INTO accounts (key, name, mode, status, cookie, shopId, is_active, module) 
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+          `INSERT OR REPLACE INTO accounts (key, name, mode, status, cookie, shopId, is_active, module, platform) 
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           [
             account.key,
             account.name,
@@ -108,7 +110,8 @@ function saveAccount(account) {
             account.cookie || '',
             account.shopId || '',
             account.is_active || 0,
-            account.module || ''
+            account.module || '',
+            account.platform || ''
           ],
           (err) => {
             if (err) reject(err);
@@ -118,7 +121,7 @@ function saveAccount(account) {
       };
 
       if (account.is_active === 1) {
-        db.run("UPDATE accounts SET is_active = 0", [], (err) => {
+        db.run("UPDATE accounts SET is_active = 0 WHERE platform = ?", [account.platform || ''], (err) => {
           if (err) return reject(err);
           insertAccount();
         });
@@ -150,13 +153,18 @@ function getAccounts() {
 function setActiveAccount(key) {
   return new Promise((resolve, reject) => {
     db.serialize(() => {
-      db.run("UPDATE accounts SET is_active = 0", [], (err) => {
-        if (err) return reject(err);
-        db.run("UPDATE accounts SET is_active = 1 WHERE key = ?", [key], (err2) => {
-          if (err2) reject(err2);
-          else resolve();
-        });
-      });
+      db.run(
+        `UPDATE accounts SET is_active = 0 
+         WHERE platform = (SELECT platform FROM accounts WHERE key = ?)`, 
+        [key], 
+        (err) => {
+          if (err) return reject(err);
+          db.run("UPDATE accounts SET is_active = 1 WHERE key = ?", [key], (err2) => {
+            if (err2) reject(err2);
+            else resolve();
+          });
+        }
+      );
     });
   });
 }
