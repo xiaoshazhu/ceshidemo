@@ -430,6 +430,586 @@ const getTableMeta = (module) => {
           }
         ]
       };
+    case 'qianchuan_video_promote':
+      return {
+        tableName: "千川投放-视频素材推广商品报表",
+        fields: [
+          {
+            fieldId: "col_material_id",
+            fieldName: "素材 ID",
+            fieldType: 1, // Text
+            isPrimary: true,
+            description: "千川视频素材 ID"
+          },
+          {
+            fieldId: "col_material_name",
+            fieldName: "素材名称",
+            fieldType: 1, // Text
+            isPrimary: false
+          },
+          {
+            fieldId: "col_product_id",
+            fieldName: "推广商品 ID",
+            fieldType: 1, // Text
+            isPrimary: false
+          },
+          {
+            fieldId: "col_product_name",
+            fieldName: "推广商品名称",
+            fieldType: 1, // Text
+            isPrimary: false
+          },
+          {
+            fieldId: "col_stat_cost",
+            fieldName: "千川成交金额",
+            fieldType: 2, // Number
+            isPrimary: false,
+            property: {
+              formatter: "#,##0.00"
+            }
+          },
+          {
+            fieldId: "col_cost",
+            fieldName: "消耗金额",
+            fieldType: 2, // Number
+            isPrimary: false,
+            property: {
+              formatter: "#,##0.00"
+            }
+          },
+          {
+            fieldId: "col_roi",
+            fieldName: "推广 ROI",
+            fieldType: 2, // Number
+            isPrimary: false,
+            property: {
+              formatter: "0.00"
+            }
+          },
+          {
+            fieldId: "col_show_cnt",
+            fieldName: "展现数",
+            fieldType: 2, // Number
+            isPrimary: false,
+            property: {
+              formatter: "#,##0"
+            }
+          },
+          {
+            fieldId: "col_click_cnt",
+            fieldName: "点击数",
+            fieldType: 2, // Number
+            isPrimary: false,
+            property: {
+              formatter: "#,##0"
+            }
+          },
+          {
+            fieldId: "col_pay_cnt",
+            fieldName: "转化成交数",
+            fieldType: 2, // Number
+            isPrimary: false,
+            property: {
+              formatter: "#,##0"
+            }
+          }
+        ]
+      };
+    case 'alimama_union':
+      return {
+        tableName: "阿里妈妈推广-淘宝联盟数据表",
+        fields: [
+          {
+            fieldId: "col_date",
+            fieldName: "统计日期",
+            fieldType: 5, // DateTime
+            isPrimary: true,
+            property: {
+              formatter: "yyyy-MM-dd"
+            }
+          },
+          {
+            fieldId: "col_click_cnt",
+            fieldName: "点击数",
+            fieldType: 2, // Number
+            isPrimary: false,
+            property: {
+              formatter: "#,##0"
+            }
+          },
+          {
+            fieldId: "col_alipay_num",
+            fieldName: "付款订单数",
+            fieldType: 2, // Number
+            isPrimary: false,
+            property: {
+              formatter: "#,##0"
+            }
+          },
+          {
+            fieldId: "col_alipay_amt",
+            fieldName: "付款金额",
+            fieldType: 2, // Number
+            isPrimary: false,
+            property: {
+              formatter: "#,##0.00"
+            }
+          },
+          {
+            fieldId: "col_commission_amt",
+            fieldName: "预估效果收入",
+            fieldType: 2, // Number
+            isPrimary: false,
+            property: {
+              formatter: "#,##0.00"
+            }
+          }
+        ]
+      };
+    case 'alimama_wanxiang':
+      return {
+        tableName: "阿里妈妈推广-万相台投放明细表",
+        fields: [
+          {
+            fieldId: "col_plan_id",
+            fieldName: "计划 ID",
+            fieldType: 1, // Text
+            isPrimary: true
+          },
+          {
+            fieldId: "col_plan_name",
+            fieldName: "计划名称",
+            fieldType: 1, // Text
+            isPrimary: false
+          },
+          {
+            fieldId: "col_cost",
+            fieldName: "消耗金额",
+            fieldType: 2, // Number
+            isPrimary: false,
+            property: {
+              formatter: "#,##0.00"
+            }
+          },
+          {
+            fieldId: "col_ctr",
+            fieldName: "点击率",
+            fieldType: 2, // Number
+            isPrimary: false,
+            property: {
+              formatter: "0.00%"
+            }
+          },
+          {
+            fieldId: "col_roi",
+            fieldName: "投资回报率",
+            fieldType: 2, // Number
+            isPrimary: false,
+            property: {
+              formatter: "0.00"
+            }
+          }
+        ]
+      };
+    case 'jingmai_order':
+      return {
+        tableName: "京麦平台-京东订单流水表",
+        fields: [
+          {
+            fieldId: "col_order_id",
+            fieldName: "订单号",
+            fieldType: 1, // Text
+            isPrimary: true
+          },
+          {
+            fieldId: "col_pay_amount",
+            fieldName: "支付金额",
+            fieldType: 2, // Number
+            isPrimary: false,
+            property: {
+              formatter: "#,##0.00"
+            }
+          },
+          {
+            fieldId: "col_create_time",
+            fieldName: "下单时间",
+            fieldType: 5, // DateTime
+            isPrimary: false,
+            property: {
+              formatter: "yyyy-MM-dd HH:mm"
+            }
+          },
+          {
+            fieldId: "col_order_status",
+            fieldName: "订单状态",
+            fieldType: 1, // Text
+            isPrimary: false
+          }
+        ]
+      };
+    case 'jingmai_finance':
+      return {
+        tableName: "京麦平台-京东资金明细表",
+        fields: [
+          {
+            fieldId: "col_flow_id",
+            fieldName: "流水号",
+            fieldType: 1, // Text
+            isPrimary: true
+          },
+          {
+            fieldId: "col_trade_amount",
+            fieldName: "收支金额",
+            fieldType: 2, // Number
+            isPrimary: false,
+            property: {
+              formatter: "#,##0.00"
+            }
+          },
+          {
+            fieldId: "col_check_time",
+            fieldName: "动账时间",
+            fieldType: 5, // DateTime
+            isPrimary: false,
+            property: {
+              formatter: "yyyy-MM-dd HH:mm"
+            }
+          },
+          {
+            fieldId: "col_remark",
+            fieldName: "备注",
+            fieldType: 1, // Text
+            isPrimary: false
+          }
+        ]
+      };
+    case 'jushuitan_order':
+      return {
+        tableName: "聚水潭ERP-出入库明细表",
+        fields: [
+          {
+            fieldId: "col_io_id",
+            fieldName: "出入库单号",
+            fieldType: 1, // Text
+            isPrimary: true
+          },
+          {
+            fieldId: "col_io_type",
+            fieldName: "单据类型",
+            fieldType: 1, // Text
+            isPrimary: false
+          },
+          {
+            fieldId: "col_wms_co_id",
+            fieldName: "分仓编号",
+            fieldType: 1, // Text
+            isPrimary: false
+          },
+          {
+            fieldId: "col_io_date",
+            fieldName: "出入库日期",
+            fieldType: 5, // DateTime
+            isPrimary: false,
+            property: {
+              formatter: "yyyy-MM-dd HH:mm"
+            }
+          },
+          {
+            fieldId: "col_qty",
+            fieldName: "数量",
+            fieldType: 2, // Number
+            isPrimary: false,
+            property: {
+              formatter: "#,##0"
+            }
+          }
+        ]
+      };
+    case 'jushuitan_inventory':
+      return {
+        tableName: "聚水潭ERP-库存同步表",
+        fields: [
+          {
+            fieldId: "col_sku_id",
+            fieldName: "商品 SKU 编码",
+            fieldType: 1, // Text
+            isPrimary: true
+          },
+          {
+            fieldId: "col_sku_name",
+            fieldName: "SKU 名称",
+            fieldType: 1, // Text
+            isPrimary: false
+          },
+          {
+            fieldId: "col_inventory_qty",
+            fieldName: "库存数量",
+            fieldType: 2, // Number
+            isPrimary: false,
+            property: {
+              formatter: "#,##0"
+            }
+          },
+          {
+            fieldId: "col_lock_qty",
+            fieldName: "锁库数量",
+            fieldType: 2, // Number
+            isPrimary: false,
+            property: {
+              formatter: "#,##0"
+            }
+          }
+        ]
+      };
+    case 'qianniu_bill_wechat':
+      return {
+        tableName: "千牛工作台-微信支付明细表",
+        fields: [
+          {
+            fieldId: "col_flow_id",
+            fieldName: "流水号",
+            fieldType: 1, // Text
+            isPrimary: true
+          },
+          {
+            fieldId: "col_trade_amount",
+            fieldName: "交易金额",
+            fieldType: 2, // Number
+            isPrimary: false,
+            property: {
+              formatter: "#,##0.00"
+            }
+          },
+          {
+            fieldId: "col_check_time",
+            fieldName: "动账时间",
+            fieldType: 5, // DateTime
+            isPrimary: false,
+            property: {
+              formatter: "yyyy-MM-dd HH:mm"
+            }
+          },
+          {
+            fieldId: "col_remark",
+            fieldName: "收支备注",
+            fieldType: 1, // Text
+            isPrimary: false
+          }
+        ]
+      };
+    case 'qianniu_bill_alipay':
+      return {
+        tableName: "千牛工作台-支付宝账单明细表",
+        fields: [
+          {
+            fieldId: "col_flow_id",
+            fieldName: "流水号",
+            fieldType: 1, // Text
+            isPrimary: true
+          },
+          {
+            fieldId: "col_trade_amount",
+            fieldName: "交易金额",
+            fieldType: 2, // Number
+            isPrimary: false,
+            property: {
+              formatter: "#,##0.00"
+            }
+          },
+          {
+            fieldId: "col_check_time",
+            fieldName: "动账时间",
+            fieldType: 5, // DateTime
+            isPrimary: false,
+            property: {
+              formatter: "yyyy-MM-dd HH:mm"
+            }
+          },
+          {
+            fieldId: "col_remark",
+            fieldName: "收支备注",
+            fieldType: 1, // Text
+            isPrimary: false
+          }
+        ]
+      };
+    case 'xiaohongshu_pugongying':
+      return {
+        tableName: "小红书推广-蒲公英达人合作笔记表",
+        fields: [
+          {
+            fieldId: "col_note_id",
+            fieldName: "笔记 ID",
+            fieldType: 1, // Text
+            isPrimary: true
+          },
+          {
+            fieldId: "col_note_title",
+            fieldName: "笔记标题",
+            fieldType: 1, // Text
+            isPrimary: false
+          },
+          {
+            fieldId: "col_publish_time",
+            fieldName: "发布时间",
+            fieldType: 5, // DateTime
+            isPrimary: false,
+            property: {
+              formatter: "yyyy-MM-dd HH:mm"
+            }
+          },
+          {
+            fieldId: "col_read_cnt",
+            fieldName: "阅读数",
+            fieldType: 2, // Number
+            isPrimary: false,
+            property: {
+              formatter: "#,##0"
+            }
+          },
+          {
+            fieldId: "col_like_cnt",
+            fieldName: "点赞数",
+            fieldType: 2, // Number
+            isPrimary: false,
+            property: {
+              formatter: "#,##0"
+            }
+          }
+        ]
+      };
+    case 'xiaohongshu_chengfeng_account':
+      return {
+        tableName: "小红书推广-乘风账户日明细表",
+        fields: [
+          {
+            fieldId: "col_date",
+            fieldName: "统计日期",
+            fieldType: 5, // DateTime
+            isPrimary: true,
+            property: {
+              formatter: "yyyy-MM-dd"
+            }
+          },
+          {
+            fieldId: "col_cost",
+            fieldName: "消耗金额",
+            fieldType: 2, // Number
+            isPrimary: false,
+            property: {
+              formatter: "#,##0.00"
+            }
+          },
+          {
+            fieldId: "col_show_cnt",
+            fieldName: "展现数",
+            fieldType: 2, // Number
+            isPrimary: false,
+            property: {
+              formatter: "#,##0"
+            }
+          },
+          {
+            fieldId: "col_click_cnt",
+            fieldName: "点击数",
+            fieldType: 2, // Number
+            isPrimary: false,
+            property: {
+              formatter: "#,##0"
+            }
+          },
+          {
+            fieldId: "col_roi",
+            fieldName: "投资回报率",
+            fieldType: 2, // Number
+            isPrimary: false,
+            property: {
+              formatter: "0.00"
+            }
+          }
+        ]
+      };
+    case 'xiaohongshu_juguang_plan':
+      return {
+        tableName: "小红书推广-聚光计划报表",
+        fields: [
+          {
+            fieldId: "col_plan_id",
+            fieldName: "计划 ID",
+            fieldType: 1, // Text
+            isPrimary: true
+          },
+          {
+            fieldId: "col_plan_name",
+            fieldName: "计划名称",
+            fieldType: 1, // Text
+            isPrimary: false
+          },
+          {
+            fieldId: "col_cost",
+            fieldName: "消耗金额",
+            fieldType: 2, // Number
+            isPrimary: false,
+            property: {
+              formatter: "#,##0.00"
+            }
+          },
+          {
+            fieldId: "col_ctr",
+            fieldName: "点击率",
+            fieldType: 2, // Number
+            isPrimary: false,
+            property: {
+              formatter: "0.00%"
+            }
+          },
+          {
+            fieldId: "col_roi",
+            fieldName: "投资回报率",
+            fieldType: 2, // Number
+            isPrimary: false,
+            property: {
+              formatter: "0.00"
+            }
+          }
+        ]
+      };
+    case 'xiaohongshu_qianfan_balance':
+      return {
+        tableName: "小红书资金-千帆余额明细表",
+        fields: [
+          {
+            fieldId: "col_flow_id",
+            fieldName: "流水号",
+            fieldType: 1, // Text
+            isPrimary: true
+          },
+          {
+            fieldId: "col_trade_amount",
+            fieldName: "动账金额",
+            fieldType: 2, // Number
+            isPrimary: false,
+            property: {
+              formatter: "#,##0.00"
+            }
+          },
+          {
+            fieldId: "col_check_time",
+            fieldName: "动账时间",
+            fieldType: 5, // DateTime
+            isPrimary: false,
+            property: {
+              formatter: "yyyy-MM-dd HH:mm"
+            }
+          },
+          {
+            fieldId: "col_remark",
+            fieldName: "动账备注",
+            fieldType: 1, // Text
+            isPrimary: false
+          }
+        ]
+      };
     case 'order_report':
     default:
       return {

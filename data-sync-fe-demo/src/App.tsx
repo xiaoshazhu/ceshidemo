@@ -92,6 +92,96 @@ const MODULE_FIELDS: Record<string, { key: string; label: string; type: string; 
     { key: 'current_balance', label: '账户余额（元） (current_balance)', type: 'Number', defaultField: 'col_current_balance' },
     { key: 'frozen_amount', label: '冻结总额（元） (frozen_amount)', type: 'Number', defaultField: 'col_frozen_amount' },
     { key: 'remark', label: '动账备注 (remark)', type: 'Text', defaultField: 'col_remark' }
+  ],
+  qianchuan_video_promote: [
+    { key: 'material_id', label: '素材 ID (material_id)', type: 'Text', defaultField: 'col_material_id' },
+    { key: 'material_name', label: '素材名称 (material_name)', type: 'Text', defaultField: 'col_material_name' },
+    { key: 'product_id', label: '推广商品 ID (product_id)', type: 'Text', defaultField: 'col_product_id' },
+    { key: 'product_name', label: '推广商品名称 (product_name)', type: 'Text', defaultField: 'col_product_name' },
+    { key: 'stat_cost', label: '千川成交金额 (stat_cost)', type: 'Number', defaultField: 'col_stat_cost' },
+    { key: 'cost', label: '消耗金额 (cost)', type: 'Number', defaultField: 'col_cost' },
+    { key: 'roi', label: '推广 ROI (roi)', type: 'Number', defaultField: 'col_roi' },
+    { key: 'show_cnt', label: '展现数 (show_cnt)', type: 'Number', defaultField: 'col_show_cnt' },
+    { key: 'click_cnt', label: '点击数 (click_cnt)', type: 'Number', defaultField: 'col_click_cnt' },
+    { key: 'pay_cnt', label: '转化成交数 (pay_cnt)', type: 'Number', defaultField: 'col_pay_cnt' }
+  ],
+  alimama_union: [
+    { key: 'date', label: '统计日期 (date)', type: 'DateTime', defaultField: 'col_date' },
+    { key: 'click_cnt', label: '点击数 (click_cnt)', type: 'Number', defaultField: 'col_click_cnt' },
+    { key: 'alipay_num', label: '付款订单数 (alipay_num)', type: 'Number', defaultField: 'col_alipay_num' },
+    { key: 'alipay_amt', label: '付款金额 (alipay_amt)', type: 'Number', defaultField: 'col_alipay_amt' },
+    { key: 'commission_amt', label: '预估效果收入 (commission_amt)', type: 'Number', defaultField: 'col_commission_amt' }
+  ],
+  alimama_wanxiang: [
+    { key: 'plan_id', label: '计划 ID (plan_id)', type: 'Text', defaultField: 'col_plan_id' },
+    { key: 'plan_name', label: '计划名称 (plan_name)', type: 'Text', defaultField: 'col_plan_name' },
+    { key: 'cost', label: '消耗金额 (cost)', type: 'Number', defaultField: 'col_cost' },
+    { key: 'ctr', label: '点击率 (ctr)', type: 'Number', defaultField: 'col_ctr' },
+    { key: 'roi', label: '投资回报率 (roi)', type: 'Number', defaultField: 'col_roi' }
+  ],
+  jingmai_order: [
+    { key: 'order_id', label: '订单号 (order_id)', type: 'Text', defaultField: 'col_order_id' },
+    { key: 'pay_amount', label: '支付金额 (pay_amount)', type: 'Number', defaultField: 'col_pay_amount' },
+    { key: 'create_time', label: '下单时间 (create_time)', type: 'DateTime', defaultField: 'col_create_time' },
+    { key: 'order_status', label: '订单状态 (order_status)', type: 'Text', defaultField: 'col_order_status' }
+  ],
+  jingmai_finance: [
+    { key: 'flow_id', label: '流水号 (flow_id)', type: 'Text', defaultField: 'col_flow_id' },
+    { key: 'trade_amount', label: '收支金额 (trade_amount)', type: 'Number', defaultField: 'col_trade_amount' },
+    { key: 'check_time', label: '动账时间 (check_time)', type: 'DateTime', defaultField: 'col_check_time' },
+    { key: 'remark', label: '备注 (remark)', type: 'Text', defaultField: 'col_remark' }
+  ],
+  jushuitan_order: [
+    { key: 'io_id', label: '出入库单号 (io_id)', type: 'Text', defaultField: 'col_io_id' },
+    { key: 'io_type', label: '单据类型 (io_type)', type: 'Text', defaultField: 'col_io_type' },
+    { key: 'wms_co_id', label: '分仓编号 (wms_co_id)', type: 'Text', defaultField: 'col_wms_co_id' },
+    { key: 'io_date', label: '出入库日期 (io_date)', type: 'DateTime', defaultField: 'col_io_date' },
+    { key: 'qty', label: '数量 (qty)', type: 'Number', defaultField: 'col_qty' }
+  ],
+  jushuitan_inventory: [
+    { key: 'sku_id', label: '商品 SKU 编码 (sku_id)', type: 'Text', defaultField: 'col_sku_id' },
+    { key: 'sku_name', label: 'SKU 名称 (sku_name)', type: 'Text', defaultField: 'col_sku_name' },
+    { key: 'inventory_qty', label: '库存数量 (inventory_qty)', type: 'Number', defaultField: 'col_inventory_qty' },
+    { key: 'lock_qty', label: '锁库数量 (lock_qty)', type: 'Number', defaultField: 'col_lock_qty' }
+  ],
+  qianniu_bill_wechat: [
+    { key: 'flow_id', label: '流水号 (flow_id)', type: 'Text', defaultField: 'col_flow_id' },
+    { key: 'trade_amount', label: '交易金额 (trade_amount)', type: 'Number', defaultField: 'col_trade_amount' },
+    { key: 'check_time', label: '动账时间 (check_time)', type: 'DateTime', defaultField: 'col_check_time' },
+    { key: 'remark', label: '收支备注 (remark)', type: 'Text', defaultField: 'col_remark' }
+  ],
+  qianniu_bill_alipay: [
+    { key: 'flow_id', label: '流水号 (flow_id)', type: 'Text', defaultField: 'col_flow_id' },
+    { key: 'trade_amount', label: '交易金额 (trade_amount)', type: 'Number', defaultField: 'col_trade_amount' },
+    { key: 'check_time', label: '动账时间 (check_time)', type: 'DateTime', defaultField: 'col_check_time' },
+    { key: 'remark', label: '收支备注 (remark)', type: 'Text', defaultField: 'col_remark' }
+  ],
+  xiaohongshu_pugongying: [
+    { key: 'note_id', label: '笔记 ID (note_id)', type: 'Text', defaultField: 'col_note_id' },
+    { key: 'note_title', label: '笔记标题 (note_title)', type: 'Text', defaultField: 'col_note_title' },
+    { key: 'publish_time', label: '发布时间 (publish_time)', type: 'DateTime', defaultField: 'col_publish_time' },
+    { key: 'read_cnt', label: '阅读数 (read_cnt)', type: 'Number', defaultField: 'col_read_cnt' },
+    { key: 'like_cnt', label: '点赞数 (like_cnt)', type: 'Number', defaultField: 'col_like_cnt' }
+  ],
+  xiaohongshu_chengfeng_account: [
+    { key: 'date', label: '统计日期 (date)', type: 'DateTime', defaultField: 'col_date' },
+    { key: 'cost', label: '消耗金额 (cost)', type: 'Number', defaultField: 'col_cost' },
+    { key: 'show_cnt', label: '展现数 (show_cnt)', type: 'Number', defaultField: 'col_show_cnt' },
+    { key: 'click_cnt', label: '点击数 (click_cnt)', type: 'Number', defaultField: 'col_click_cnt' },
+    { key: 'roi', label: '投资回报率 (roi)', type: 'Number', defaultField: 'col_roi' }
+  ],
+  xiaohongshu_juguang_plan: [
+    { key: 'plan_id', label: '计划 ID (plan_id)', type: 'Text', defaultField: 'col_plan_id' },
+    { key: 'plan_name', label: '计划名称 (plan_name)', type: 'Text', defaultField: 'col_plan_name' },
+    { key: 'cost', label: '消耗金额 (cost)', type: 'Number', defaultField: 'col_cost' },
+    { key: 'ctr', label: '点击率 (ctr)', type: 'Number', defaultField: 'col_ctr' },
+    { key: 'roi', label: '投资回报率 (roi)', type: 'Number', defaultField: 'col_roi' }
+  ],
+  xiaohongshu_qianfan_balance: [
+    { key: 'flow_id', label: '流水号 (flow_id)', type: 'Text', defaultField: 'col_flow_id' },
+    { key: 'trade_amount', label: '动账金额 (trade_amount)', type: 'Number', defaultField: 'col_trade_amount' },
+    { key: 'check_time', label: '动账时间 (check_time)', type: 'DateTime', defaultField: 'col_check_time' },
+    { key: 'remark', label: '动账备注 (remark)', type: 'Text', defaultField: 'col_remark' }
   ]
 };
 
@@ -125,6 +215,135 @@ const PLATFORMS_MAP: PlatformConfig[] = [
   { key: 'qianniu', name: '千牛工作台', desc: '微信/支付宝聚合账单与店铺管理', icon: '🐂', url: 'https://qn.taobao.com/' },
   { key: 'xiaohongshu', name: '小红书', desc: '包含小红书蒲公英、千帆平台', icon: '📕', url: 'https://ark.xiaohongshu.com/' }
 ];
+
+const getTreeDataForPlatform = (pKey: string) => {
+  switch (pKey) {
+    case 'douyin':
+      return [
+        {
+          title: '🚚 订单发货',
+          value: 'group_order_delivery',
+          selectable: false,
+          children: [
+            { title: '订单管理', value: 'order_report' },
+            { title: '卡券管理', value: 'coupon_manage' },
+            { title: '发货中心', value: 'delivery_center' },
+            { title: '订单报备', value: 'order_report_delay' },
+            { title: '包裹中心', value: 'package_center' },
+            { title: '物流工具', value: 'logistic_tools' },
+            { title: '电子面单', value: 'electronic_sheet' },
+            { title: '物料服务', value: 'material_service' },
+            { title: '物料诊断', value: 'material_diagnose' }
+          ]
+        },
+        {
+          title: '💰 资金板块',
+          value: 'group_compass_finance',
+          selectable: false,
+          children: [
+            { title: '账户中心', value: 'account_center' },
+            { title: '保证金账户', value: 'deposit_account' },
+            { title: '抖店货款', value: 'doudian_goods_payment' },
+            { title: '帐单管理', value: 'bill_management' },
+            { title: '返佣管理', value: 'commission_refund' },
+            { title: '发票管理', value: 'invoice_management' },
+            { title: '历史报表', value: 'historical_report' }
+          ]
+        }
+      ];
+    case 'qianchuan':
+      return [
+        {
+          title: '🎥 推广投放 (巨量千川)',
+          value: 'group_qianchuan',
+          selectable: false,
+          children: [
+            { title: '素材分析 — 巨量千川素材数据报表', value: 'qianchuan_material' },
+            { title: '投放明细 — 巨量千川全域推广明细', value: 'qianchuan_all' },
+            { title: '单品投放 — 巨量千川单品推广报表', value: 'qianchuan_product' },
+            { title: '视频素材推广商品 (推商品)', value: 'qianchuan_video_promote' }
+          ]
+        }
+      ];
+    case 'compass':
+      return [
+        {
+          title: '🧭 电商罗盘',
+          value: 'group_compass',
+          selectable: false,
+          children: [
+            { title: '罗盘经营分析-成交概览表', value: 'compass_trade' },
+            { title: '罗盘商品分析-商品核心明细表', value: 'compass_product' },
+            { title: '资金对账-抖店余额与待结算表', value: 'dy_balance' }
+          ]
+        }
+      ];
+    case 'alimama':
+      return [
+        {
+          title: '🌸 阿里妈妈推广',
+          value: 'group_alimama',
+          selectable: false,
+          children: [
+            { title: '淘宝联盟推广数据', value: 'alimama_union' },
+            { title: '万相台投放明细表', value: 'alimama_wanxiang' }
+          ]
+        }
+      ];
+    case 'jingmai':
+      return [
+        {
+          title: '📦 京麦商家平台',
+          value: 'group_jingmai',
+          selectable: false,
+          children: [
+            { title: '京东订单流水表', value: 'jingmai_order' },
+            { title: '京东资金明细表', value: 'jingmai_finance' }
+          ]
+        }
+      ];
+    case 'jushuitan':
+      return [
+        {
+          title: '💧 聚水潭 ERP',
+          value: 'group_jushuitan',
+          selectable: false,
+          children: [
+            { title: 'ERP 订单出入库明细表', value: 'jushuitan_order' },
+            { title: '商品库存同步表', value: 'jushuitan_inventory' }
+          ]
+        }
+      ];
+    case 'qianniu':
+      return [
+        {
+          title: '🐂 千牛工作台',
+          value: 'group_qianniu',
+          selectable: false,
+          children: [
+            { title: '微信支付聚合账单', value: 'qianniu_bill_wechat' },
+            { title: '支付宝支付账单', value: 'qianniu_bill_alipay' }
+          ]
+        }
+      ];
+    case 'xiaohongshu':
+      return [
+        {
+          title: '📕 小红书平台',
+          value: 'group_xiaohongshu',
+          selectable: false,
+          children: [
+            { title: '蒲公英达人合作笔记', value: 'xiaohongshu_pugongying' },
+            { title: '乘风账户明细', value: 'xiaohongshu_chengfeng_account' },
+            { title: '聚光计划报表', value: 'xiaohongshu_juguang_plan' },
+            { title: '千帆资金余额明细', value: 'xiaohongshu_qianfan_balance' }
+          ]
+        }
+      ];
+    default:
+      return [];
+  }
+};
 
 const getPlaceholder = (pKey: string) => {
   switch (pKey) {
@@ -239,16 +458,40 @@ export default function App(): JSX.Element {
   // 监听 platform 发生切换，自动切换参数和模块的默认激活状态
   useEffect(() => {
     const activeAcc = accounts.find((a: any) => a.isActive && a.platform === platform);
+    
+    // 获取当前平台所有有效的同步模块列表
+    const platformTree = getTreeDataForPlatform(platform);
+    const validModules: string[] = [];
+    platformTree.forEach(group => {
+      if (group.children) {
+        group.children.forEach(child => {
+          validModules.push(child.value);
+        });
+      }
+    });
+    
+    const defaultModules: Record<string, string> = {
+      douyin: 'order_report',
+      qianchuan: 'qianchuan_material',
+      compass: 'compass_trade',
+      alimama: 'alimama_union',
+      jingmai: 'jingmai_order',
+      jushuitan: 'jushuitan_order',
+      qianniu: 'qianniu_bill_wechat',
+      xiaohongshu: 'xiaohongshu_pugongying'
+    };
+    const defaultMod = defaultModules[platform] || validModules[0] || 'order_report';
+
     if (activeAcc) {
       setShopIdParam(activeAcc.shopId || '');
-      setSyncModule(activeAcc.module || 'order_report');
+      if (activeAcc.module && validModules.includes(activeAcc.module)) {
+        setSyncModule(activeAcc.module);
+      } else {
+        setSyncModule(defaultMod);
+      }
     } else {
       setShopIdParam('');
-      if (platform === 'qianchuan') {
-        setSyncModule('qianchuan_material');
-      } else {
-        setSyncModule('order_report');
-      }
+      setSyncModule(defaultMod);
     }
   }, [platform, accounts]);
 
@@ -644,7 +887,7 @@ export default function App(): JSX.Element {
       return;
     }
     if (!shopIdParam) {
-      message.error('请输入需要同步的抖音店铺 ID (Shop ID)！');
+      message.error(`请输入需要同步的${PLATFORMS_MAP.find(p => p.key === platform)?.name || '平台'} 店铺 ID (Shop ID / Account ID)！`);
       return;
     }
 
@@ -866,48 +1109,7 @@ export default function App(): JSX.Element {
                 placeholder="请选择目标同步动作 / 模块"
                 treeDefaultExpandAll
                 onChange={(val) => setSyncModule(val)}
-                treeData={[
-                  {
-                    title: '🚚 订单发货',
-                    value: 'group_order_delivery',
-                    selectable: false,
-                    children: [
-                      { title: '订单管理', value: 'order_report' },
-                      { title: '卡券管理', value: 'coupon_manage' },
-                      { title: '发货中心', value: 'delivery_center' },
-                      { title: '订单报备', value: 'order_report_delay' },
-                      { title: '包裹中心', value: 'package_center' },
-                      { title: '物流工具', value: 'logistic_tools' },
-                      { title: '电子面单', value: 'electronic_sheet' },
-                      { title: '物料服务', value: 'material_service' },
-                      { title: '物料诊断', value: 'material_diagnose' }
-                    ]
-                  },
-                  {
-                    title: '💰 资金板块',
-                    value: 'group_compass_finance',
-                    selectable: false,
-                    children: [
-                      { title: '账户中心', value: 'account_center' },
-                      { title: '保证金账户', value: 'deposit_account' },
-                      { title: '抖店货款', value: 'doudian_goods_payment' },
-                      { title: '帐单管理', value: 'bill_management' },
-                      { title: '返佣管理', value: 'commission_refund' },
-                      { title: '发票管理', value: 'invoice_management' },
-                      { title: '历史报表', value: 'historical_report' }
-                    ]
-                  },
-                  {
-                    title: '🎥 推广投放 (巨量千川)',
-                    value: 'group_qianchuan',
-                    selectable: false,
-                    children: [
-                      { title: '素材分析 — 巨量千川素材数据报表', value: 'qianchuan_material' },
-                      { title: '投放明细 — 巨量千川全域推广明细', value: 'qianchuan_all' },
-                      { title: '单品投放 — 巨量千川单品推广报表', value: 'qianchuan_product' }
-                    ]
-                  }
-                ]}
+                treeData={getTreeDataForPlatform(platform)}
               />
             </Form.Item>
             
@@ -1064,14 +1266,14 @@ export default function App(): JSX.Element {
           <div style={{ fontSize: '13px', lineHeight: '1.6', color: '#595959' }}>
             <p><strong>关于模式 B (Cookie 捕获免验证码同步) 的工作原理：</strong></p>
             <ol>
-              <li>点击账号关联界面的 <strong>“点击开始网页模拟登录”</strong>，系统将引导打开抖音罗盘或抖店登录主页。</li>
+              <li>点击账号关联界面的 <strong>“点击开始网页模拟登录”</strong>，系统将引导打开 {PLATFORMS_MAP.find(p => p.key === platform)?.name || '商家'} 登录主页。</li>
               <li>在浏览器子窗口中登录您的商家账号。</li>
               <li>登录完成后，<strong>运行我们提供的“一键捕获书签”</strong>，该脚本将会跨域安全上报您当前的 Session Cookie 给本服务器。</li>
-              <li>后端捕获到 Cookie 后，子窗口会自动关闭并确认绑定。定时任务会启用 Session 保活（Keep-Alive）心跳包，通常可在后台**持续免密同步数周**。</li>
+              <li>后端捕获到 Cookie 后，子窗口会自动关闭并确认绑定。定时任务会启用 Session 保换（Keep-Alive）心跳包，通常可在后台**持续免密同步数周**。</li>
             </ol>
             
             <p style={{ marginTop: '16px' }}><strong>🛠 浏览器捕获助手一键安装：</strong></p>
-            <p>请将下面的黄色按钮直接<strong>拖动（Drag）到您的浏览器书签栏（Bookmark Bar）</strong>中；或者在登录后的抖音网页控制台 (F12 Console) 中复制运行以下代码：</p>
+            <p>请将下面的黄色按钮直接<strong>拖动（Drag）到您的浏览器书签栏（Bookmark Bar）</strong>中；或者在登录后的 {PLATFORMS_MAP.find(p => p.key === platform)?.name || '商家'} 网页控制台 (F12 Console) 中复制运行以下代码：</p>
             
             <div style={{ margin: '14px 0' }}>
               <a 
@@ -1090,7 +1292,7 @@ export default function App(): JSX.Element {
                   message.info('💡 请将该按钮直接拖动到浏览器书签栏，不可直接点击运行哦。');
                 }}
               >
-                🖱️ 拖拽此按钮至书签栏 (抖音凭证捕获助手)
+                🖱️ 拖拽此按钮至书签栏 ({PLATFORMS_MAP.find(p => p.key === platform)?.name || '商家'}凭证捕获助手)
               </a>
             </div>
 

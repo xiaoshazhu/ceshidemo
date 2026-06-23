@@ -138,6 +138,21 @@ const getTableRecords = async (reqBody) => {
           dataObj[mappings.pay_rate || 'col_pay_rate'] = Number(item.pay_rate || item.payRate || 0);
           dataObj[mappings.shop_name || 'col_shop_name'] = item.shop_name || config.accountInfo?.name || "抖音罗盘推广店铺";
 
+        } else if (syncModule === 'qianchuan_video_promote') {
+          const mId = item.material_id || item.materialId || item.video_id || item.id || `MAT_${index}`;
+          primaryId = mId;
+          
+          dataObj[mappings.material_id || 'col_material_id'] = mId;
+          dataObj[mappings.material_name || 'col_material_name'] = item.material_name || item.materialName || item.title || `视频素材_${index}`;
+          dataObj[mappings.product_id || 'col_product_id'] = item.product_id || item.productId || item.goods_id || "";
+          dataObj[mappings.product_name || 'col_product_name'] = item.product_name || item.productName || item.goods_name || "";
+          dataObj[mappings.stat_cost || 'col_stat_cost'] = Number(item.stat_cost || item.statCost || item.gmv || item.pay_amount || item.pay_order_amount || 0);
+          dataObj[mappings.cost || 'col_cost'] = Number(item.cost || item.cost_amount || item.spend || 0);
+          dataObj[mappings.roi || 'col_roi'] = Number(item.roi || item.pre_roi || item.pay_roi || 0);
+          dataObj[mappings.show_cnt || 'col_show_cnt'] = Number(item.show_cnt || item.show_count || item.show || item.play_cnt || item.play_count || 0);
+          dataObj[mappings.click_cnt || 'col_click_cnt'] = Number(item.click_cnt || item.click_count || item.click || 0);
+          dataObj[mappings.pay_cnt || 'col_pay_cnt'] = Number(item.pay_cnt || item.pay_count || item.convert_cnt || item.convert_count || item.pay_order_count || 0);
+
         } else {
           // 默认订单管理等
           const orderId = item.order_id || item.orderId || `ORDER_${index}`;
@@ -384,7 +399,97 @@ const getTableRecords = async (reqBody) => {
         }
       });
     }
+  } else if (syncModule === 'qianchuan_video_promote') {
+    // 视频素材推广商品 (推商品)
+    const videoNames = [
+      "爆款防晒衣户外实测效果对比.mp4",
+      "绝美法式碎花连衣裙上身效果.mp4",
+      "极速开箱：防水防油运动鞋测评.mp4"
+    ];
+    const productNames = [
+      "冰丝防晒衣",
+      "复古碎花长裙",
+      "户外黑科技跑鞋"
+    ];
+    for (let i = 0; i < videoNames.length; i++) {
+      const mId = `MAT_PROMO_738192${i}`;
+      const pId = `PROD_PROMO_9928${i}`;
+      const cost = Number((Math.random() * 20000 + 3000).toFixed(2));
+      const roi = Number((Math.random() * 3.5 + 1.2).toFixed(2));
+      const statCost = Number((cost * roi).toFixed(2));
+      const show = Math.floor(cost * (Math.random() * 60 + 50));
+      const click = Math.floor(show * (Math.random() * 0.05 + 0.02));
+      const pay = Math.floor(click * (Math.random() * 0.08 + 0.03));
+      
+      list.push({
+        primaryId: mId,
+        data: {
+          [mappings.material_id || 'col_material_id']: mId,
+          [mappings.material_name || 'col_material_name']: videoNames[i],
+          [mappings.product_id || 'col_product_id']: pId,
+          [mappings.product_name || 'col_product_name']: productNames[i],
+          [mappings.stat_cost || 'col_stat_cost']: statCost,
+          [mappings.cost || 'col_cost']: cost,
+          [mappings.roi || 'col_roi']: roi,
+          [mappings.show_cnt || 'col_show_cnt']: show,
+          [mappings.click_cnt || 'col_click_cnt']: click,
+          [mappings.pay_cnt || 'col_pay_cnt']: pay
+        }
+      });
+    }
   } else {
+    // ------------------------------------------------------------
+    // 默认或通用 Mock 自动生成器 (支持 20+ 模块，避免为新模块编写重复代码)
+    // ------------------------------------------------------------
+    const { getTableMeta } = require('./table_meta.js');
+    const meta = getTableMeta(syncModule);
+    if (meta && meta.fields && syncModule !== 'order_report') {
+      console.log(`[Mock Helper] 模块 "${syncModule}" 匹配到元数据，开启高保真动态 Mock 生成...`);
+      for (let i = 0; i < 5; i++) {
+        const dataObj = {};
+        let primaryIdVal = "";
+        
+        meta.fields.forEach((field) => {
+          const mapKey = mappings[field.fieldName] || mappings[field.fieldId] || field.fieldId;
+          let val;
+          if (field.fieldType === 1) { // Text
+            if (field.isPrimary) {
+              val = `${syncModule.toUpperCase()}_ID_${i}_${Math.floor(Math.random() * 1000)}`;
+              primaryIdVal = val;
+            } else {
+              val = `模拟${field.fieldName}_${i}`;
+            }
+          } else if (field.fieldType === 2) { // Number
+            if (field.fieldName.includes("ROI")) {
+              val = Number((Math.random() * 3 + 1.2).toFixed(2));
+            } else if (field.fieldName.includes("率")) {
+              val = Number((Math.random() * 0.1 + 0.01).toFixed(4));
+            } else if (field.fieldName.includes("金额") || field.fieldName.includes("额") || field.fieldName.includes("消耗") || field.fieldName.includes("GMV")) {
+              val = Number((Math.random() * 10000 + 100).toFixed(2));
+            } else {
+              val = Math.floor(Math.random() * 1000 + 10);
+            }
+          } else if (field.fieldType === 5) { // DateTime
+            val = Date.now() - i * 24 * 3600000;
+          } else {
+            val = `Val_${i}`;
+          }
+          dataObj[mapKey] = val;
+        });
+        
+        list.push({
+          primaryId: primaryIdVal || `${syncModule.toUpperCase()}_MOCK_${i}`,
+          data: dataObj
+        });
+      }
+      
+      return {
+        nextPageToken: "",
+        hasMore: false,
+        records: list
+      };
+    }
+
     // 默认情况：订单发货 -> 订单管理 — 订单流水数据抓取
     let rawOrders = [];
     const cookie = config.accountInfo?.cookie || "";
