@@ -59,12 +59,13 @@ const MODULE_FIELDS: Record<string, { key: string; label: string; type: string; 
     { key: 'shop_name', label: '店铺名称 (shop_name)', type: 'Text', defaultField: 'col_shop_name' }
   ],
   qianchuan_material: [
-    { key: 'material_id', label: '素材 ID (material_id)', type: 'Text', defaultField: 'col_material_id' },
-    { key: 'material_name', label: '素材名称 (material_name)', type: 'Text', defaultField: 'col_material_name' },
-    { key: 'show_cnt', label: '素材展现量 (show_cnt)', type: 'Number', defaultField: 'col_show_cnt' },
-    { key: 'cost', label: '素材消耗 (cost)', type: 'Number', defaultField: 'col_cost' },
-    { key: 'ctr', label: '素材点击率 (ctr)', type: 'Number', defaultField: 'col_ctr' },
-    { key: 'product_name', label: '推广产品 (product_name)', type: 'Text', defaultField: 'col_product_name' }
+    { key: 'video', label: '视频 (video)', type: 'Text', defaultField: 'col_video' },
+    { key: 'analysis', label: '分析 (analysis)', type: 'Text', defaultField: 'col_analysis' },
+    { key: 'duration', label: '时长 (duration)', type: 'Number', defaultField: 'col_duration' },
+    { key: 'create_time', label: '创建时间 (create_time)', type: 'DateTime', defaultField: 'col_create_time' },
+    { key: 'assoc_info', label: '关联信息 (assoc_info)', type: 'Text', defaultField: 'col_assoc_info' },
+    { key: 'material_source', label: '素材来源 (material_source)', type: 'Text', defaultField: 'col_material_source' },
+    { key: 'tags', label: '标签 (tags)', type: 'Text', defaultField: 'col_tags' }
   ],
   qianchuan_all: [
     { key: 'plan_id', label: '计划 ID (plan_id)', type: 'Text', defaultField: 'col_plan_id' },

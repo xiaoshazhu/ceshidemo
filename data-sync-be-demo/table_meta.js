@@ -270,53 +270,59 @@ const getTableMeta = (module) => {
         tableName: "千川投放-素材分析报表",
         fields: [
           {
-            fieldId: "col_material_id",
-            fieldName: "素材 ID",
+            fieldId: "col_video",
+            fieldName: "视频",
             fieldType: 1, // Text
             isPrimary: true,
-            description: "千川投放视频/图片素材唯一 ID"
+            description: "视频素材名称或链接"
           },
           {
-            fieldId: "col_material_name",
-            fieldName: "素材名称",
+            fieldId: "col_analysis",
+            fieldName: "分析",
             fieldType: 1, // Text
-            isPrimary: false
+            isPrimary: false,
+            description: "素材分析详情"
           },
           {
-            fieldId: "col_show_cnt",
-            fieldName: "素材展现量",
+            fieldId: "col_duration",
+            fieldName: "时长",
             fieldType: 2, // Number
             isPrimary: false,
             property: {
               formatter: "#,##0"
             },
-            description: "广告展现总次数"
+            description: "视频时长 (秒)"
           },
           {
-            fieldId: "col_cost",
-            fieldName: "素材消耗",
-            fieldType: 2, // Number
+            fieldId: "col_create_time",
+            fieldName: "创建时间",
+            fieldType: 5, // DateTime
             isPrimary: false,
             property: {
-              formatter: "#,##0.00"
+              formatter: "yyyy-MM-dd HH:mm"
             },
-            description: "素材投放消耗的广告本金"
+            description: "素材创建时间"
           },
           {
-            fieldId: "col_ctr",
-            fieldName: "素材点击率",
-            fieldType: 2, // Number
-            isPrimary: false,
-            property: {
-              formatter: "0.00%"
-            },
-            description: "展现转化为点击的比率"
-          },
-          {
-            fieldId: "col_product_name",
-            fieldName: "推广产品",
+            fieldId: "col_assoc_info",
+            fieldName: "关联信息",
             fieldType: 1, // Text
-            isPrimary: false
+            isPrimary: false,
+            description: "关联广告计划/商品信息"
+          },
+          {
+            fieldId: "col_material_source",
+            fieldName: "素材来源",
+            fieldType: 1, // Text
+            isPrimary: false,
+            description: "素材来源渠道"
+          },
+          {
+            fieldId: "col_tags",
+            fieldName: "标签",
+            fieldType: 1, // Text
+            isPrimary: false,
+            description: "素材分类标签"
           }
         ]
       };

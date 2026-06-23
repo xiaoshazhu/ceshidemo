@@ -153,6 +153,24 @@ const getTableRecords = async (reqBody) => {
           dataObj[mappings.click_cnt || 'col_click_cnt'] = Number(item.click_cnt || item.click_count || item.click || 0);
           dataObj[mappings.pay_cnt || 'col_pay_cnt'] = Number(item.pay_cnt || item.pay_count || item.convert_cnt || item.convert_count || item.pay_order_count || 0);
 
+        } else if (syncModule === 'qianchuan_material') {
+          const vName = item.video_name || item.material_name || item.title || item.video || `视频素材_${index}`;
+          primaryId = vName;
+          
+          dataObj[mappings.video || 'col_video'] = vName;
+          dataObj[mappings.analysis || 'col_analysis'] = item.analysis || item.analysis_detail || "无数据分析建议";
+          dataObj[mappings.duration || 'col_duration'] = Number(item.duration || item.video_duration || 0);
+          
+          const timeVal = item.create_time || item.created_at || new Date().toISOString();
+          let timestamp = Date.now();
+          const parsedTime = Date.parse(String(timeVal).replace(/-/g, '/'));
+          if (!isNaN(parsedTime)) timestamp = parsedTime;
+          dataObj[mappings.create_time || 'col_create_time'] = timestamp;
+          
+          dataObj[mappings.assoc_info || 'col_assoc_info'] = item.assoc_info || item.promotion_info || "";
+          dataObj[mappings.material_source || 'col_material_source'] = item.material_source || item.source || "本地上传";
+          dataObj[mappings.tags || 'col_tags'] = item.tags || item.tag_list || "";
+
         } else {
           // 默认订单管理等
           const orderId = item.order_id || item.orderId || `ORDER_${index}`;
@@ -337,24 +355,36 @@ const getTableRecords = async (reqBody) => {
     }
   } else if (syncModule === 'qianchuan_material') {
     // 素材分析 — 巨量千川素材数据报表
-    const materialNames = [
+    const videoNames = [
       "短视频带货混剪高光剪辑版A.mp4", 
       "夏季服饰防晒衣卖点展示混剪.mp4", 
       "工厂流水线直击源头正品背书.mp4", 
       "达人上身穿搭真实体验Vlog.mp4"
     ];
-    for (let i = 0; i < materialNames.length; i++) {
-      const mId = `MAT_82938192${i}`;
-      const cost = Number((Math.random() * 30000 + 5000).toFixed(2));
+    const analyses = [
+      "视频完播率较高，展现量稳定上涨中，ROI达标",
+      "前3秒跳出率偏高，建议优化黄金前3秒文案",
+      "评论区互动积极，可增加小黄车引导买点提示",
+      "整体表现平稳，转化效率符合预期"
+    ];
+    const sources = ["剪映自动生成", "达人供稿", "自研拍摄", "服务商代剪辑"];
+    const tags = ["主打服饰", "防晒推荐", "工厂探秘", "达人穿搭"];
+    
+    for (let i = 0; i < videoNames.length; i++) {
+      const vName = videoNames[i];
+      const duration = Math.floor(Math.random() * 40) + 15; // 15s to 55s
+      const createTime = Date.now() - i * 24 * 3600000;
+      
       list.push({
-        primaryId: mId,
+        primaryId: vName,
         data: {
-          [mappings.material_id || 'col_material_id']: mId,
-          [mappings.material_name || 'col_material_name']: materialNames[i],
-          [mappings.show_cnt || 'col_show_cnt']: Math.floor(cost * (Math.random() * 50 + 80)),
-          [mappings.cost || 'col_cost']: cost,
-          [mappings.ctr || 'col_ctr']: Number((Math.random() * 0.06 + 0.015).toFixed(4)),
-          [mappings.product_name || 'col_product_name']: `推广爆款宝贝_${i}`
+          [mappings.video || 'col_video']: vName,
+          [mappings.analysis || 'col_analysis']: analyses[i % analyses.length],
+          [mappings.duration || 'col_duration']: duration,
+          [mappings.create_time || 'col_create_time']: createTime,
+          [mappings.assoc_info || 'col_assoc_info']: `推广计划: 千川优化推广计划_0${i}号 (商品: 爆款防晒宝贝)`,
+          [mappings.material_source || 'col_material_source']: sources[i % sources.length],
+          [mappings.tags || 'col_tags']: tags[i % tags.length]
         }
       });
     }
