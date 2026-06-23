@@ -1,0 +1,122 @@
+[
+  {
+    "id": "ERR_1781679828264",
+    "taskId": "TASK_17816798",
+    "timestamp": "2026/6/17 15:03:48",
+    "platform": "抖音电商罗盘",
+    "shopName": "店铺_130480051",
+    "errorType": "接口500报错",
+    "errorMessage": "DoudianAPIError: [code=10011] 参数错误: invalid uid type ",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1781679761689",
+    "taskId": "TASK_17816797",
+    "timestamp": "2026/6/17 15:02:41",
+    "platform": "抖音电商罗盘",
+    "shopName": "店铺_130480051",
+    "errorType": "接口500报错",
+    "errorMessage": "DoudianAPIError: [code=10011] 参数错误: invalid uid type ",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1781678817117",
+    "taskId": "TASK_17816788",
+    "timestamp": "2026/6/17 14:46:57",
+    "platform": "抖音电商罗盘",
+    "shopName": "店铺_982734",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "抖店 Session Cookie 已过期失效，请重新在连接器配置页面扫码/验证码登录捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1781674798490",
+    "taskId": "TASK_17816747",
+    "timestamp": "2026/6/17 13:39:58",
+    "platform": "抖音电商罗盘",
+    "shopName": "店铺_982734",
+    "errorType": "接口500报错",
+    "errorMessage": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1781674779616",
+    "taskId": "TASK_17816747",
+    "timestamp": "2026/6/17 13:39:39",
+    "platform": "抖音电商罗盘",
+    "shopName": "店铺_982734",
+    "errorType": "接口500报错",
+    "errorMessage": "fetch is not a function",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1781674306982",
+    "taskId": "TASK_17816743",
+    "timestamp": "2026/6/17 13:31:46",
+    "platform": "抖音电商罗盘",
+    "shopName": "店铺_982734",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "抖店 Session Cookie 已过期失效，请重新在连接器配置页面扫码/验证码登录捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1781674062533",
+    "taskId": "TASK_17816740",
+    "timestamp": "2026/6/17 13:27:42",
+    "platform": "抖音电商罗盘",
+    "shopName": "店铺_982734",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "抖店 Session Cookie 已过期失效，请重新在连接器配置页面扫码/验证码登录捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1781670465934",
+    "taskId": "TASK_17816704",
+    "timestamp": "2026/6/17 12:27:45",
+    "platform": "抖音电商罗盘",
+    "shopName": "店铺_982734",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "抖店 Session Cookie 已过期失效，请重新在连接器配置页面扫码/验证码登录捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1781666876184",
+    "taskId": "TASK_17816668",
+    "timestamp": "2026/6/17 11:27:56",
+    "platform": "抖音电商罗盘",
+    "shopName": "店铺_982734",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "抖店 Session Cookie 已过期失效，请重新在连接器配置页面扫码/验证码登录捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1781666791340",
+    "taskId": "TASK_17816667",
+    "timestamp": "2026/6/17 11:26:31",
+    "platform": "抖音电商罗盘",
+    "shopName": "店铺_982734",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "抖店 Session Cookie 已过期失效，请重新在连接器配置页面扫码/验证码登录捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1781663985673",
+    "taskId": "TASK_17816639",
+    "timestamp": "2026/6/17 10:39:45",
+    "platform": "抖音电商罗盘",
+    "shopName": "店铺_982734",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "抖店 Session Cookie 已过期失效，请重新在连接器配置页面扫码/验证码登录捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1781663962296",
+    "taskId": "TASK_17816639",
+    "timestamp": "2026/6/17 10:39:22",
+    "platform": "抖音电商罗盘",
+    "shopName": "店铺_982734",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "抖店 Session Cookie 已过期失效，请重新在连接器配置页面扫码/验证码登录捕获！",
+    "status": "待处理"
+  }
+]

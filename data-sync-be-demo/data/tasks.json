@@ -1,0 +1,29 @@
+{
+  "platform": "douyin",
+  "syncModule": "account_center",
+  "shopIdParam": "130480051",
+  "dateRange": "30",
+  "fieldMappings": {
+    "flow_id": "col_flow_id",
+    "order_id": "col_order_id",
+    "sub_order_id": "col_sub_order_id",
+    "check_time": "col_check_time_v3",
+    "biz_scene": "col_biz_scene",
+    "trade_amount": "col_trade_amount",
+    "current_balance": "col_current_balance",
+    "frozen_amount": "col_frozen_amount",
+    "remark": "col_remark"
+  },
+  "refreshFrequency": "hour",
+  "merchantUid": "7291551609760710657",
+  "payChannel": "aggregate",
+  "timeType": "custom",
+  "customStartDate": "2026-05-17",
+  "customEndDate": "2026-06-17",
+  "accountInfo": {
+    "mode": "模拟登录",
+    "name": "余额明细 (ID: 130480051)",
+    "cookie": "passport_csrf_token=f654e439b156444d48dadd097020403c; passport_csrf_token_default=f654e439b156444d48dadd097020403c; csrf_session_id=f475240a91c7c837f550197b63a13968; x-web-secsdk-uid=f02c011b-55f2-4041-890f-f74aa7def6bd; Hm_lvt_b6520b076191ab4b36812da4c90f7a5e=1781663444; HMACCOUNT=AF1442CB68028041; s_v_web_id=verify_mqhgewc4_zdjiZWMX_XyUk_4yuS_9po6_OMSDf3GnHf4v; zsgw_business_data=%7B%22uuid%22%3A%22459bee55-bff5-4bf2-a7c8-8817f7913faa%22%2C%22platform%22%3A%22pc%22%2C%22source%22%3A%22seo.fxg.jinritemai.com%22%7D; gfkadpd=4272,42210|4272,23756; COMPASS_LUOPAN_DT=session_7652187435031429439; BUYIN_SASID=SID2_7652185533221372212; PHPSESSID=79a7e2469074dfb0f6eb45ba88418a32; PHPSESSID_SS=79a7e2469074dfb0f6eb45ba88418a32; ecom_us_lt=00ef784f275a82b1fb38a03c5c15913a91a3177ba4bca910d9efa490240aab50; ecom_us_lt_ss=00ef784f275a82b1fb38a03c5c15913a91a3177ba4bca910d9efa490240aab50; ecom_gray_shop_id=130480051; source=PCPromotionActive_7649219382400876819; Hm_lpvt_b6520b076191ab4b36812da4c90f7a5e=1781678664",
+    "shopId": "130480051"
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "config": {
+    "value": "{\"platform\":\"douyin\",\"syncModule\":\"order_report\",\"shopIdParam\":\"982734\",\"dateRange\":\"30\",\"fieldMappings\":{\"order_id\":\"col_order_id\",\"pay_amount\":\"col_pay_amount\",\"create_time\":\"col_create_time\",\"order_status\":\"col_order_status\",\"shop_name\":\"col_shop_name\",\"shop_id\":\"col_shop_id\"},\"refreshFrequency\":\"hour\",\"accountInfo\":{\"mode\":\"模拟登录\",\"name\":\"罗盘推广账号B (共享)\",\"cookie\":\"invalid_mock_cookie_for_test\"}}"
+  }
+}
