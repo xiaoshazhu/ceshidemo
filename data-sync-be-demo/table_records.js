@@ -139,21 +139,6 @@ const getTableRecords = async (reqBody) => {
           dataObj[mappings.shop_name || 'col_shop_name'] = item.shop_name || config.accountInfo?.name || "抖音罗盘推广店铺";
 
         } else if (syncModule === 'qianchuan_video_promote') {
-          const mId = item.material_id || item.materialId || item.video_id || item.id || `MAT_${index}`;
-          primaryId = mId;
-          
-          dataObj[mappings.material_id || 'col_material_id'] = mId;
-          dataObj[mappings.material_name || 'col_material_name'] = item.material_name || item.materialName || item.title || `视频素材_${index}`;
-          dataObj[mappings.product_id || 'col_product_id'] = item.product_id || item.productId || item.goods_id || "";
-          dataObj[mappings.product_name || 'col_product_name'] = item.product_name || item.productName || item.goods_name || "";
-          dataObj[mappings.stat_cost || 'col_stat_cost'] = Number(item.stat_cost || item.statCost || item.gmv || item.pay_amount || item.pay_order_amount || 0);
-          dataObj[mappings.cost || 'col_cost'] = Number(item.cost || item.cost_amount || item.spend || 0);
-          dataObj[mappings.roi || 'col_roi'] = Number(item.roi || item.pre_roi || item.pay_roi || 0);
-          dataObj[mappings.show_cnt || 'col_show_cnt'] = Number(item.show_cnt || item.show_count || item.show || item.play_cnt || item.play_count || 0);
-          dataObj[mappings.click_cnt || 'col_click_cnt'] = Number(item.click_cnt || item.click_count || item.click || 0);
-          dataObj[mappings.pay_cnt || 'col_pay_cnt'] = Number(item.pay_cnt || item.pay_count || item.convert_cnt || item.convert_count || item.pay_order_count || 0);
-
-        } else if (syncModule === 'qianchuan_material') {
           const vName = item.video_name || item.material_name || item.title || item.video || `视频素材_${index}`;
           primaryId = vName;
           
@@ -170,6 +155,17 @@ const getTableRecords = async (reqBody) => {
           dataObj[mappings.assoc_info || 'col_assoc_info'] = item.assoc_info || item.promotion_info || "";
           dataObj[mappings.material_source || 'col_material_source'] = item.material_source || item.source || "本地上传";
           dataObj[mappings.tags || 'col_tags'] = item.tags || item.tag_list || "";
+
+        } else if (syncModule === 'qianchuan_material') {
+          const mId = item.material_id || item.materialId || item.video_id || item.id || `MAT_${index}`;
+          primaryId = mId;
+          
+          dataObj[mappings.material_id || 'col_material_id'] = mId;
+          dataObj[mappings.material_name || 'col_material_name'] = item.material_name || item.materialName || item.title || `视频素材_${index}`;
+          dataObj[mappings.show_cnt || 'col_show_cnt'] = Number(item.show_cnt || item.show_count || item.show || item.play_cnt || item.play_count || 0);
+          dataObj[mappings.cost || 'col_cost'] = Number(item.cost || item.cost_amount || item.spend || 0);
+          dataObj[mappings.ctr || 'col_ctr'] = Number(item.ctr || item.click_rate || item.click_ratio || 0);
+          dataObj[mappings.product_name || 'col_product_name'] = item.product_name || item.productName || item.goods_name || "";
 
         } else {
           // 默认订单管理等
@@ -361,30 +357,18 @@ const getTableRecords = async (reqBody) => {
       "工厂流水线直击源头正品背书.mp4", 
       "达人上身穿搭真实体验Vlog.mp4"
     ];
-    const analyses = [
-      "视频完播率较高，展现量稳定上涨中，ROI达标",
-      "前3秒跳出率偏高，建议优化黄金前3秒文案",
-      "评论区互动积极，可增加小黄车引导买点提示",
-      "整体表现平稳，转化效率符合预期"
-    ];
-    const sources = ["剪映自动生成", "达人供稿", "自研拍摄", "服务商代剪辑"];
-    const tags = ["主打服饰", "防晒推荐", "工厂探秘", "达人穿搭"];
-    
     for (let i = 0; i < videoNames.length; i++) {
-      const vName = videoNames[i];
-      const duration = Math.floor(Math.random() * 40) + 15; // 15s to 55s
-      const createTime = Date.now() - i * 24 * 3600000;
-      
+      const mId = `MAT_82938192${i}`;
+      const cost = Number((Math.random() * 30000 + 5000).toFixed(2));
       list.push({
-        primaryId: vName,
+        primaryId: mId,
         data: {
-          [mappings.video || 'col_video']: vName,
-          [mappings.analysis || 'col_analysis']: analyses[i % analyses.length],
-          [mappings.duration || 'col_duration']: duration,
-          [mappings.create_time || 'col_create_time']: createTime,
-          [mappings.assoc_info || 'col_assoc_info']: `推广计划: 千川优化推广计划_0${i}号 (商品: 爆款防晒宝贝)`,
-          [mappings.material_source || 'col_material_source']: sources[i % sources.length],
-          [mappings.tags || 'col_tags']: tags[i % tags.length]
+          [mappings.material_id || 'col_material_id']: mId,
+          [mappings.material_name || 'col_material_name']: videoNames[i],
+          [mappings.show_cnt || 'col_show_cnt']: Math.floor(cost * (Math.random() * 50 + 80)),
+          [mappings.cost || 'col_cost']: cost,
+          [mappings.ctr || 'col_ctr']: Number((Math.random() * 0.06 + 0.015).toFixed(4)),
+          [mappings.product_name || 'col_product_name']: `推广爆款宝贝_${i}`
         }
       });
     }
@@ -432,38 +416,35 @@ const getTableRecords = async (reqBody) => {
   } else if (syncModule === 'qianchuan_video_promote') {
     // 视频素材推广商品 (推商品)
     const videoNames = [
-      "爆款防晒衣户外实测效果对比.mp4",
-      "绝美法式碎花连衣裙上身效果.mp4",
-      "极速开箱：防水防油运动鞋测评.mp4"
+      "短视频带货混剪高光剪辑版A.mp4", 
+      "夏季服饰防晒衣卖点展示混剪.mp4", 
+      "工厂流水线直击源头正品背书.mp4", 
+      "达人上身穿搭真实体验Vlog.mp4"
     ];
-    const productNames = [
-      "冰丝防晒衣",
-      "复古碎花长裙",
-      "户外黑科技跑鞋"
+    const analyses = [
+      "视频完播率较高，展现量稳定上涨中，ROI达标",
+      "前3秒跳出率偏高，建议优化黄金前3秒文案",
+      "评论区互动积极，可增加小黄车引导买点提示",
+      "整体表现平稳，转化效率符合预期"
     ];
+    const sources = ["剪映自动生成", "达人供稿", "自研拍摄", "服务商代剪辑"];
+    const tags = ["主打服饰", "防晒推荐", "工厂探秘", "达人穿搭"];
+    
     for (let i = 0; i < videoNames.length; i++) {
-      const mId = `MAT_PROMO_738192${i}`;
-      const pId = `PROD_PROMO_9928${i}`;
-      const cost = Number((Math.random() * 20000 + 3000).toFixed(2));
-      const roi = Number((Math.random() * 3.5 + 1.2).toFixed(2));
-      const statCost = Number((cost * roi).toFixed(2));
-      const show = Math.floor(cost * (Math.random() * 60 + 50));
-      const click = Math.floor(show * (Math.random() * 0.05 + 0.02));
-      const pay = Math.floor(click * (Math.random() * 0.08 + 0.03));
+      const vName = videoNames[i];
+      const duration = Math.floor(Math.random() * 40) + 15; // 15s to 55s
+      const createTime = Date.now() - i * 24 * 3600000;
       
       list.push({
-        primaryId: mId,
+        primaryId: vName,
         data: {
-          [mappings.material_id || 'col_material_id']: mId,
-          [mappings.material_name || 'col_material_name']: videoNames[i],
-          [mappings.product_id || 'col_product_id']: pId,
-          [mappings.product_name || 'col_product_name']: productNames[i],
-          [mappings.stat_cost || 'col_stat_cost']: statCost,
-          [mappings.cost || 'col_cost']: cost,
-          [mappings.roi || 'col_roi']: roi,
-          [mappings.show_cnt || 'col_show_cnt']: show,
-          [mappings.click_cnt || 'col_click_cnt']: click,
-          [mappings.pay_cnt || 'col_pay_cnt']: pay
+          [mappings.video || 'col_video']: vName,
+          [mappings.analysis || 'col_analysis']: analyses[i % analyses.length],
+          [mappings.duration || 'col_duration']: duration,
+          [mappings.create_time || 'col_create_time']: createTime,
+          [mappings.assoc_info || 'col_assoc_info']: `推广计划: 千川优化推广计划_0${i}号 (商品: 爆款防晒宝贝)`,
+          [mappings.material_source || 'col_material_source']: sources[i % sources.length],
+          [mappings.tags || 'col_tags']: tags[i % tags.length]
         }
       });
     }
