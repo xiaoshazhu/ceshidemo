@@ -176,6 +176,92 @@ app.post("/api/v1/connector/sources/login-capture", async (req, res) => {
 });
 
 /**
+ * 功能描述：接收由浏览器一键书签 GET 方式回传的凭据（绕过严格的 CSP 跨域策略拦截）
+ * @param {object} req - Express 请求
+ * @param {object} res - Express 响应
+ */
+app.get("/api/v1/connector/sources/login-capture-get", async (req, res) => {
+  const { cookie, shopId, shopName, module } = req.query;
+  if (!cookie) {
+    return res.status(400).send("<h1>错误：Cookie 凭证为空</h1>");
+  }
+
+  const payload = {
+    cookie: cookie,
+    shopId: shopId || "",
+    shopName: shopName || "小红书/电商平台店铺",
+    module: module || "xiaohongshu_pugongying"
+  };
+
+  try {
+    // 写入 SQLite 暂存
+    await saveCapturedBuffer(payload);
+    console.log("✅ [GET 凭证拦截成功] 登录凭证已注入 SQLite 暂存数据库:", payload);
+    
+    // 返回精致的玻璃拟态自动关闭成功确认页
+    res.send(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <title>凭证上报成功</title>
+        <style>
+          body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+          }
+          .card {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            max-width: 400px;
+          }
+          h1 { color: #2b821d; font-size: 24px; margin-bottom: 10px; }
+          p { color: #555; font-size: 14px; line-height: 1.6; }
+          .loader {
+            margin: 20px auto 0;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+          }
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="card">
+          <h1>🎉 上报成功！</h1>
+          <p>小红书 / 电商平台登录凭证已安全传输至连接器。<br>本窗口将在 2 秒后自动关闭，请返回多维表格配置页面继续。</p>
+          <div class="loader"></div>
+        </div>
+        <script>
+          setTimeout(function() {
+            window.close();
+          }, 2000);
+        </script>
+      </body>
+      </html>
+    `);
+  } catch (e) {
+    res.status(500).send(`<h1>写入暂存数据库出错</h1><p>${e.message}</p>`);
+  }
+});
+
+/**
  * 功能描述：提供给前端 H5 弹窗轮询以查看当前是否成功捕获了 Cookie 凭证与关联模块
  * @param {object} req - Express 请求
  * @param {object} res - Express 响应

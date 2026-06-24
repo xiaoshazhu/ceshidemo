@@ -342,6 +342,36 @@ const getTreeDataForPlatform = (pKey: string) => {
   }
 };
 
+/**
+ * 功能描述：基于所选的平台与同步模块，动态计算出最精准的网页登录入口 URL
+ * @param {string} pKey - 平台唯一标识
+ * @param {string} mKey - 同步模块唯一标识
+ * @return {string} 返回网页登录的 URL 地址
+ */
+const getDynamicLoginUrl = (pKey: string, mKey: string): string => {
+  if (pKey === 'xiaohongshu') {
+    if (mKey === 'xiaohongshu_pugongying') return 'https://pgy.xiaohongshu.com/';
+    if (mKey === 'xiaohongshu_juguang_plan') return 'https://ad.xiaohongshu.com/';
+    if (mKey === 'xiaohongshu_chengfeng_account') return 'https://cf.xiaohongshu.com/';
+    if (mKey === 'xiaohongshu_qianfan_balance') return 'https://ark.xiaohongshu.com/';
+    return 'https://ark.xiaohongshu.com/';
+  }
+  if (pKey === 'alimama') {
+    if (mKey === 'alimama_union') return 'https://pub.alimama.com/';
+    if (mKey === 'alimama_wanxiang') return 'https://wanxiang.taobao.com/';
+    return 'https://www.alimama.com/';
+  }
+  const defaultUrls: Record<string, string> = {
+    douyin: 'https://fxg.jinritemai.com/login/common?extra=%7B%22target_url%22%3A%22https%3A%2F%2Ffxg.jinritemai.com%2Fffa%2Fmshop%2Fhomepage%2Findex%22%7D',
+    compass: 'https://compass.jinritemai.com/',
+    jingmai: 'https://passport.shop.jd.com/',
+    qianchuan: 'https://qianchuan.jinritemai.com/',
+    jushuitan: 'https://www.jushuitan.com/login.html',
+    qianniu: 'https://qn.taobao.com/'
+  };
+  return defaultUrls[pKey] || 'https://www.baidu.com';
+};
+
 const getPlaceholder = (pKey: string) => {
   switch (pKey) {
     case 'douyin': return '请输入数字格式的抖音店铺 ID，例如：982734';
@@ -700,12 +730,12 @@ export default function App(): JSX.Element {
   };
 
   /**
-   * 功能描述：触发打开外部抖音官方登录页，并开始后台轮询以监听 Cookie 上报
+   * 功能描述：触发打开外部电商/平台官方登录页，并开始后台轮询以监听 Cookie 上报
    * @return {void} 无返回值
    */
   const handleStartSimulatedLogin = (): void => {
     const selectedPlatform = PLATFORMS_MAP.find(p => p.key === platform) || PLATFORMS_MAP[0];
-    const targetUrl = selectedPlatform.url;
+    const targetUrl = getDynamicLoginUrl(platform, syncModule);
     window.open(targetUrl, '_blank', 'width=800,height=600,left=200,top=100');
     setIsPolling(true);
     message.loading({ content: `正在轮询捕获 ${selectedPlatform.name} 登录凭证，请在新页面中登录并运行书签脚本...`, key: 'poll', duration: 0 });
@@ -939,38 +969,22 @@ export default function App(): JSX.Element {
     const code = `javascript:(function(){
       var cookie = document.cookie;
       var shopId = '';
-      var match = cookie.match(/shop_id=(\\d+)/) || cookie.match(/shop_id_str=(\\d+)/) || cookie.match(/member_id=(\\d+)/) || cookie.match(/seller_id=(\\d+)/) || cookie.match(/userId=(\\d+)/);
+      var match = cookie.match(/shop_id=(\\d+)/) || cookie.match(/shop_id_str=(\\d+)/) || cookie.match(/member_id=(\\d+)/) || cookie.match(/seller_id=(\\d+)/) || cookie.match(/userId=(\\d+)/) || cookie.match(/customer_id=(\\d+)/);
       if (match) {
         shopId = match[1];
       }
       if (!shopId) {
-        var urlMatch = window.location.href.match(/[?&](shopId|shop_id|sellerId|seller_id|advertiserId|advertiser_id|userId)=(\\d+)/);
+        var urlMatch = window.location.href.match(/[?&](shopId|shop_id|sellerId|seller_id|advertiserId|advertiser_id|userId|customer_id)=(\\d+)/);
         if (urlMatch) shopId = urlMatch[2];
       }
       if (!shopId) {
         shopId = prompt("请输入您的 ${selectedPlatform.name} 店铺 ID / 账号 ID (选填/必填):");
       }
-      var serverUrl = "${hostOrigin}/api/v1/connector/sources/login-capture";
-      var payload = {
-        cookie: cookie,
-        shopId: shopId || "default",
-        shopName: document.title || "${selectedPlatform.name}店铺",
-        module: "${syncModule}",
-        userAgent: navigator.userAgent
-      };
-      fetch(serverUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      }).then(function(res) {
-        return res.json();
-      }).then(function(data) {
-        alert("🎉 ${selectedPlatform.name} 登录凭证上报并同步成功！您可以返回多维表格配置页。");
-      }).catch(function(err) {
-        alert("上报失败: " + err.message);
-      });
+      var serverUrl = "${hostOrigin}/api/v1/connector/sources/login-capture-get";
+      var url = serverUrl + "?cookie=" + encodeURIComponent(cookie) + "&shopId=" + encodeURIComponent(shopId || "default") + "&shopName=" + encodeURIComponent(document.title || "${selectedPlatform.name}店铺") + "&module=${syncModule}";
+      window.open(url, "_blank");
     })();`;
-    return code.replace(/\r?\n\s*/g, '');
+    return code.replace(/\\r?\\n\\s*/g, '').replace(/\r?\n\s*/g, '');
   }, [platform, syncModule]);
 
   return (
