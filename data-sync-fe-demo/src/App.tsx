@@ -836,7 +836,7 @@ export default function App(): JSX.Element {
     
     if (newAcc) {
       try {
-        await fetch('/api/v1/connector/accounts/add', {
+        const response = await fetch('/api/v1/connector/accounts/add', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -851,10 +851,15 @@ export default function App(): JSX.Element {
             platform: platform
           })
         });
-        message.success('新账号已成功绑定并存盘！');
-        await fetchAccounts();
-      } catch (e) {
-        message.error("写入数据库失败");
+        if (response.ok) {
+          message.success('新账号已成功绑定并存盘！');
+          await fetchAccounts();
+        } else {
+          const errData = await response.json().catch(() => ({}));
+          message.error(`绑定失败: ${errData.message || '服务器响应错误'}`);
+        }
+      } catch (e: any) {
+        message.error(`写入数据库失败: ${e.message || e}`);
       }
     }
     
@@ -923,7 +928,13 @@ export default function App(): JSX.Element {
       return;
     }
 
-    const activeAccount = accounts.find(a => a.isActive && a.platform === platform) || accounts.find(a => a.platform === platform) || accounts[0];
+    const activeAccount = accounts.find(a => a.isActive && a.platform === platform) || accounts.find(a => a.platform === platform);
+
+    if (!activeAccount) {
+      const pName = PLATFORMS_MAP.find(p => p.key === platform)?.name || '当前平台';
+      message.error(`请先关联并选择一个【${pName}】平台的有效授权账号！`);
+      return;
+    }
 
     const config = {
       platform,

@@ -100,20 +100,38 @@ app.post("/api/table_meta", (req, res) => {
   console.log("飞书加密签名验证结果：", isValid);
 
   let syncModule = 'order_report';
-  if (req.body && req.body.params) {
-    try {
-      const paramsObj = JSON.parse(req.body.params);
-      if (paramsObj.datasourceConfig) {
-        const datasourceConfigObj = JSON.parse(paramsObj.datasourceConfig);
-        if (datasourceConfigObj.value) {
-          const configVal = JSON.parse(datasourceConfigObj.value);
-          if (configVal.syncModule) {
-            syncModule = configVal.syncModule;
+  if (req.body) {
+    if (req.body.params) {
+      try {
+        const paramsObj = typeof req.body.params === 'string' ? JSON.parse(req.body.params) : req.body.params;
+        let datasourceConfigObj = paramsObj.datasourceConfig;
+        if (datasourceConfigObj) {
+          if (typeof datasourceConfigObj === 'string') {
+            datasourceConfigObj = JSON.parse(datasourceConfigObj);
+          }
+          let configVal = datasourceConfigObj.value;
+          if (configVal) {
+            if (typeof configVal === 'string') {
+              configVal = JSON.parse(configVal);
+            }
+            if (configVal.syncModule) {
+              syncModule = configVal.syncModule;
+            }
           }
         }
+      } catch (e) {
+        console.warn("解析 table_meta 中的 params.syncModule 失败:", e.message);
       }
-    } catch (e) {
-      console.warn("解析 table_meta 中的 syncModule 失败，使用默认值:", e.message);
+    }
+    if (syncModule === 'order_report' && req.body.config && req.body.config.value) {
+      try {
+        const configVal = typeof req.body.config.value === 'string' ? JSON.parse(req.body.config.value) : req.body.config.value;
+        if (configVal && configVal.syncModule) {
+          syncModule = configVal.syncModule;
+        }
+      } catch (e) {
+        console.warn("解析 table_meta 中的 config.syncModule 失败:", e.message);
+      }
     }
   }
 
@@ -323,10 +341,13 @@ app.get("/api/v1/connector/accounts", async (req, res) => {
  * @param {object} res - Express 响应
  */
 app.post("/api/v1/connector/accounts/add", async (req, res) => {
+  console.log("👉 [添加账号请求] Body:", req.body);
   try {
     await saveAccount(req.body);
+    console.log("✅ 账号成功存入数据库:", req.body.key);
     res.status(200).json({ code: 0, message: "账号已保存至数据库" });
   } catch (e) {
+    console.error("❌ 添加账号出错:", e);
     res.status(500).json({ code: 500, message: `添加账号出错: ${e.message}` });
   }
 });

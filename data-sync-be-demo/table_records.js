@@ -10,11 +10,14 @@ const getTableRecords = async (reqBody) => {
   let pageToken = "";
   if (reqBody && reqBody.params) {
     try {
-      const paramsObj = JSON.parse(reqBody.params);
-      if (paramsObj.datasourceConfig) {
-        const datasourceConfigObj = JSON.parse(paramsObj.datasourceConfig);
+      const paramsObj = typeof reqBody.params === 'string' ? JSON.parse(reqBody.params) : reqBody.params;
+      let datasourceConfigObj = paramsObj.datasourceConfig;
+      if (datasourceConfigObj) {
+        if (typeof datasourceConfigObj === 'string') {
+          datasourceConfigObj = JSON.parse(datasourceConfigObj);
+        }
         if (datasourceConfigObj.value) {
-          config = JSON.parse(datasourceConfigObj.value);
+          config = typeof datasourceConfigObj.value === 'string' ? JSON.parse(datasourceConfigObj.value) : datasourceConfigObj.value;
         }
       }
       if (paramsObj.pageToken) {
@@ -25,7 +28,7 @@ const getTableRecords = async (reqBody) => {
     }
   } else if (reqBody && reqBody.config && reqBody.config.value) {
     try {
-      config = JSON.parse(reqBody.config.value);
+      config = typeof reqBody.config.value === 'string' ? JSON.parse(reqBody.config.value) : reqBody.config.value;
     } catch (e) {
       console.error("解析配置 config 失败", e);
     }

@@ -80,8 +80,10 @@ function initDb() {
           // 尝试升级旧 accounts 表结构以支持 module 与 platform 字段
           db.run("ALTER TABLE accounts ADD COLUMN module TEXT", () => {
             db.run("ALTER TABLE accounts ADD COLUMN platform TEXT", () => {
-              // 忽略已存在的报错，正常 resolve
-              resolve();
+              // 自动修复迁移旧存量数据中为空的 platform 字段，统一归于默认的抖音数据源下
+              db.run("UPDATE accounts SET platform = 'douyin' WHERE platform IS NULL OR platform = ''", (errMigrate) => {
+                resolve();
+              });
             });
           });
         }
@@ -91,11 +93,29 @@ function initDb() {
 }
 
 /**
+ * 功能描述：基于同步动作模块自动识别归属的数据源平台 (用作容错兜底)
+ * @param {string} module - 同步模块标识
+ * @return {string} 返回所属平台键值
+ */
+function detectPlatformByModule(module) {
+  if (!module) return 'douyin';
+  const m = String(module);
+  if (m.startsWith('xiaohongshu_')) return 'xiaohongshu';
+  if (m.startsWith('qianchuan_')) return 'qianchuan';
+  if (m.startsWith('alimama_')) return 'alimama';
+  if (m.startsWith('jingmai_')) return 'jingmai';
+  if (m.startsWith('jushuitan_')) return 'jushuitan';
+  if (m.startsWith('qianniu_')) return 'qianniu';
+  return 'douyin';
+}
+
+/**
  * 功能描述：保存或更新自建新账号
  * @param {object} account - 账号对象
  * @return {Promise<void>} 无返回值
  */
 function saveAccount(account) {
+  const platformVal = account.platform || detectPlatformByModule(account.module);
   return new Promise((resolve, reject) => {
     db.serialize(() => {
       const insertAccount = () => {
@@ -111,7 +131,7 @@ function saveAccount(account) {
             account.shopId || '',
             account.is_active || 0,
             account.module || '',
-            account.platform || ''
+            platformVal
           ],
           (err) => {
             if (err) reject(err);
