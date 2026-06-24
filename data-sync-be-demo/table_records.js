@@ -167,6 +167,25 @@ const getTableRecords = async (reqBody) => {
           dataObj[mappings.ctr || 'col_ctr'] = Number(item.ctr || item.click_rate || item.click_ratio || 0);
           dataObj[mappings.product_name || 'col_product_name'] = item.product_name || item.productName || item.goods_name || "";
 
+        } else if (syncModule === 'xiaohongshu_pugongying') {
+          const noteId = item.note_id || item.id || `NOTE_${index}`;
+          primaryId = noteId;
+          
+          let timestamp = Date.now();
+          const timeVal = item.publish_time || item.create_time || item.post_time || new Date().toISOString();
+          let parsedTime = Date.parse(String(timeVal).replace(/-/g, '/'));
+          if (typeof timeVal === 'number') {
+            timestamp = timeVal;
+          } else if (!isNaN(parsedTime)) {
+            timestamp = parsedTime;
+          }
+
+          dataObj[mappings.note_id || 'col_note_id'] = noteId;
+          dataObj[mappings.note_title || 'col_note_title'] = item.note_title || item.title || item.name || `笔记_${index}`;
+          dataObj[mappings.publish_time || 'col_publish_time'] = timestamp;
+          dataObj[mappings.read_cnt || 'col_read_cnt'] = Number(item.read_cnt || item.read_num || item.view_cnt || 0);
+          dataObj[mappings.like_cnt || 'col_like_cnt'] = Number(item.like_cnt || item.like_num || item.like_count || 0);
+
         } else {
           // 默认订单管理等
           const orderId = item.order_id || item.orderId || `ORDER_${index}`;

@@ -59,19 +59,21 @@ async function fetchRealDoudianData(cookie, shopId, syncModule, configOrDateRang
   await new Promise(resolve => setTimeout(resolve, delayMs));
 
   // 2. 优先拉取工作台导航菜单 (Fetch Menu Structure)
-  console.log(`[Mode B] 优先拉取控制台菜单以解析动态路由路径...`);
-  const menuUrl = 'https://compass.jinritemai.com/compass/api/v1/menu';
-  try {
-    const menuResp = await fetch(menuUrl, { headers: { ...headers, 'Referer': 'https://compass.jinritemai.com/' }, timeout: 6000 });
-    const menuContentType = menuResp.headers.get('content-type') || '';
-    if (menuResp.status === 200 && !menuContentType.includes('text/html')) {
-      const menuJson = await menuResp.json();
-      console.log(`[Mode B] 菜单路由树解析成功，动态数据节点路径正常`);
-    } else {
-      console.warn(`[Mode B] 菜单预检接口未返回有效 JSON (status: ${menuResp.status})，将跳过预检`);
+  if (!syncModule.startsWith('xiaohongshu_')) {
+    console.log(`[Mode B] 优先拉取控制台菜单以解析动态路由路径...`);
+    const menuUrl = 'https://compass.jinritemai.com/compass/api/v1/menu';
+    try {
+      const menuResp = await fetch(menuUrl, { headers: { ...headers, 'Referer': 'https://compass.jinritemai.com/' }, timeout: 6000 });
+      const menuContentType = menuResp.headers.get('content-type') || '';
+      if (menuResp.status === 200 && !menuContentType.includes('text/html')) {
+        const menuJson = await menuResp.json();
+        console.log(`[Mode B] 菜单路由树解析成功，动态数据节点路径正常`);
+      } else {
+        console.warn(`[Mode B] 菜单预检接口未返回有效 JSON (status: ${menuResp.status})，将跳过预检`);
+      }
+    } catch (err) {
+      console.warn(`[Mode B] 菜单预检接口请求发生异常，已跳过预检: ${err.message}`);
     }
-  } catch (err) {
-    console.warn(`[Mode B] 菜单预检接口请求发生异常，已跳过预检: ${err.message}`);
   }
 
   // 3. 计算日期时间
@@ -149,6 +151,15 @@ async function fetchRealDoudianData(cookie, shopId, syncModule, configOrDateRang
       page: pageNum,
       page_size: 50
     });
+  } else if (syncModule === 'xiaohongshu_pugongying') {
+    // 小红书蒲公英：工作台中的笔记合作我的数据笔记报告
+    requestUrl = `https://pgy.xiaohongshu.com/api/solar/content/note/list`;
+    headers['Referer'] = 'https://pgy.xiaohongshu.com/';
+    requestMethod = 'POST';
+    requestBody = JSON.stringify({
+      page: pageNum,
+      page_size: 20
+    });
   } else {
     // 默认：订单发货 -> 订单管理 (order_report 等)
     requestUrl = `https://fxg.jinritemai.com/ffa/g/order/searchList`;
@@ -206,7 +217,7 @@ async function fetchRealDoudianData(cookie, shopId, syncModule, configOrDateRang
       throw new Error(`DoudianAPIError: [code=${errCode}] ${errMsg || '接口返回错误'}`);
     }
 
-    // 抖音有些接口会在 data 下返回 list，或者直接在根节点，或者 data 本身直接就是数组
+    // 抖音/小红书有些接口会在 data 下返回 list/note_list，或者直接在根节点，或者 data 本身直接就是数组
     let list = [];
     if (Array.isArray(resJson.list)) {
       list = resJson.list;
@@ -214,7 +225,7 @@ async function fetchRealDoudianData(cookie, shopId, syncModule, configOrDateRang
       if (Array.isArray(resJson.data)) {
         list = resJson.data;
       } else {
-        list = resJson.data.list || resJson.data.data_list || resJson.data.flows || resJson.data.flow_list || [];
+        list = resJson.data.list || resJson.data.data_list || resJson.data.flows || resJson.data.flow_list || resJson.data.note_list || [];
       }
     }
     
@@ -233,7 +244,8 @@ async function fetchRealDoudianData(cookie, shopId, syncModule, configOrDateRang
     }
 
     // 静默写入本地错误库
-    logSyncError(taskId, '抖音电商罗盘', `店铺_${shopId}`, errorType, msg);
+    const platformName = syncModule.startsWith('xiaohongshu_') ? '小红书平台' : '抖音电商罗盘';
+    logSyncError(taskId, platformName, `商户_${shopId}`, errorType, msg);
     
     // 抛出异常供 records 同步阶段进行真实连接的处理，绝不静默降级，带上详细错误消息
     throw new Error(`${errorType}: ${msg}`);
