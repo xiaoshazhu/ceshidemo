@@ -168,11 +168,11 @@ const getTableRecords = async (reqBody) => {
           dataObj[mappings.product_name || 'col_product_name'] = item.product_name || item.productName || item.goods_name || "";
 
         } else if (syncModule === 'xiaohongshu_pugongying') {
-          const noteInfo = item.note_info || item.note_title || item.title || item.name || `笔记_${index}`;
-          primaryId = noteInfo;
+          const noteId = item.note_id || item.id || `NOTE_${index}`;
+          primaryId = noteId;
           
           let timestamp = Date.now();
-          const timeVal = item.publish_time || item.create_time || item.post_time || new Date().toISOString();
+          const timeVal = item.publish_time || item.create_time || item.post_time || item.post_date || new Date().toISOString();
           let parsedTime = Date.parse(String(timeVal).replace(/-/g, '/'));
           if (typeof timeVal === 'number') {
             timestamp = timeVal;
@@ -180,16 +180,27 @@ const getTableRecords = async (reqBody) => {
             timestamp = parsedTime;
           }
 
+          const title = item.note_title || item.title || item.name || `未命名笔记_${index}`;
+          const noteInfo = `[${noteId}] ${title}`;
+          const bloggerInfo = item.blogger_info || item.blogger_name || item.kol_name || item.kol_nickname || "未知博主";
+          const noteSource = item.note_source || item.source || "蒲公英平台";
+          const contentTags = item.content_tags || item.tags || item.tag_list || "时尚/穿搭";
+          const bloggerQuote = Number(item.blogger_quote || item.price || item.note_price || item.fee || 0);
+          const serviceFee = Number(item.service_fee || item.fee_amount || (bloggerQuote * 0.1).toFixed(2));
+          const isValidMode = item.is_valid_mode || (item.is_valid ? "是" : "否") || "是";
+          const spuName = item.spu_name || item.goods_name || item.product_name || "通用SPU";
+          const exposureCnt = Number(item.exposure_cnt || item.read_cnt || item.read_num || item.view_cnt || 0);
+
           dataObj[mappings.note_info || 'col_note_info'] = noteInfo;
-          dataObj[mappings.blogger_info || 'col_blogger_info'] = item.blogger_info || item.blogger_name || item.author || `博主_${index}`;
-          dataObj[mappings.note_source || 'col_note_source'] = item.note_source || item.source || "蒲公英平台合作";
+          dataObj[mappings.blogger_info || 'col_blogger_info'] = bloggerInfo;
+          dataObj[mappings.note_source || 'col_note_source'] = noteSource;
           dataObj[mappings.publish_time || 'col_publish_time'] = timestamp;
-          dataObj[mappings.content_tags || 'col_content_tags'] = item.content_tags || item.tags || "好物推荐, 时尚穿搭";
-          dataObj[mappings.blogger_quote || 'col_blogger_quote'] = Number(item.blogger_quote || item.price || item.quote || 0);
-          dataObj[mappings.service_fee || 'col_service_fee'] = Number(item.service_fee || item.fee || 0);
-          dataObj[mappings.is_valid_mode || 'col_is_valid_mode'] = item.is_valid_mode || item.valid_mode || "是";
-          dataObj[mappings.spu_name || 'col_spu_name'] = item.spu_name || item.spuName || "爆款单品";
-          dataObj[mappings.exposure_cnt || 'col_exposure_cnt'] = Number(item.exposure_cnt || item.read_cnt || item.view_cnt || 0);
+          dataObj[mappings.content_tags || 'col_content_tags'] = contentTags;
+          dataObj[mappings.blogger_quote || 'col_blogger_quote'] = bloggerQuote;
+          dataObj[mappings.service_fee || 'col_service_fee'] = serviceFee;
+          dataObj[mappings.is_valid_mode || 'col_is_valid_mode'] = isValidMode;
+          dataObj[mappings.spu_name || 'col_spu_name'] = spuName;
+          dataObj[mappings.exposure_cnt || 'col_exposure_cnt'] = exposureCnt;
 
         } else {
           // 默认订单管理等
@@ -314,65 +325,69 @@ const getTableRecords = async (reqBody) => {
       records: list
     };
   } else if (syncModule === 'xiaohongshu_pugongying') {
-    const totalCount = 396; // 王某指定的最近一个月期望条数
-    const pageSize = 100;
-    
-    let pageNum = 0;
-    if (pageToken && pageToken.startsWith("page_")) {
-      pageNum = parseInt(pageToken.split("_")[1], 10) || 0;
-    }
-    
-    const startIdx = pageNum * pageSize;
-    const endIdx = Math.min(startIdx + pageSize, totalCount);
-    
-    const bloggers = [
-      "小红薯穿搭日记", "时尚达人Lily", "美妆测评博主A", "穿搭分享小能手", 
-      "好物推荐官喵喵", "潮流前线阿风", "极简风生活家", "辣妈穿搭日记", 
-      "文艺复兴穿搭", "吃喝玩乐小太阳"
-    ];
-    const tagsList = [
-      "夏季穿搭, 显瘦搭配", "小众设计, OOTD", "国潮单品, 平价好物", "美妆护肤, 空瓶记",
-      "夏日防晒, 户外好物", "法式复古, 温柔穿搭", "职场通勤, 极简高智", "母婴好物, 育儿日常",
-      "家居好物, 提升幸福感", "周末去哪儿, 小众景点"
-    ];
-    const sources = ["蒲公英合作项目", "私域达人直连", "MCN机构代投", "达人自主申报"];
-    const validModes = ["是", "否"];
-    const spus = ["冰丝针织吊带", "高腰直筒老爹牛仔裤", "日系防晒衣", "纯棉宽松基础短袖", "平价控油防晒乳"];
+    // 小红书蒲公英：最近一个月生成 396 条左右的数据
+    const mockCount = 396;
+    let startTimeMs = Date.now() - 30 * 24 * 3600000;
+    let endTimeMs = Date.now();
+    const interval = (endTimeMs - startTimeMs) / (mockCount + 1);
 
-    for (let i = startIdx; i < endIdx; i++) {
-      const blogger = bloggers[i % bloggers.length] + `_${i}`;
-      const noteTitle = `小红书合作爆款笔记_最近一个月第${i+1}期_#${blogger}`;
-      const timeOffset = (30 - (i * 30 / totalCount)) * 24 * 3600000; // 均匀分布在最近一个月
-      const publishTime = Date.now() - timeOffset;
-      const bloggerQuote = Math.floor(Math.random() * 8000) + 1500;
+    const bloggers = ["美妆博主小红", "穿搭达人小丽", "数码极客阿强", "美食探店阿华", "旅游博主小明", "育儿专家张老师", "健身达人王教练"];
+    const tags = ["时尚/穿搭", "美妆/护肤", "数码/测评", "美食/探店", "旅游/出行", "母婴/育儿", "运动/健康"];
+    const sources = ["蒲公英官方推荐", "机构达人合作", "品牌直联招募", "自投达人分销"];
+    const spus = ["高弹力速干透气运动五分裤", "夏季冰丝超透气修身短袖T恤", "复古原宿风宽松印花纯棉卫衣", "智能恒温降噪负离子吹风机", "保湿舒缓亮肤修护面膜"];
+
+    for (let i = 0; i < mockCount; i++) {
+      const flowTime = startTimeMs + i * interval + Math.random() * (interval * 0.5);
+      const noteId = `NOTE_MOCK_` + String(flowTime).substring(5, 13) + String(i).padStart(3, '0');
+      const title = `小红书优质种草笔记分享_第${i + 1}款爆品评估`;
+      const noteInfo = `[${noteId}] ${title}`;
+      
+      const bloggerInfo = bloggers[i % bloggers.length];
+      const noteSource = sources[i % sources.length];
+      const contentTags = tags[i % tags.length];
+      
+      const bloggerQuote = Number((Math.floor(Math.random() * 140) * 100 + 1000).toFixed(2));
       const serviceFee = Number((bloggerQuote * 0.1).toFixed(2));
-      const exposureCnt = Math.floor(Math.random() * 80000) + 5000;
+      const isValidMode = i % 20 === 0 ? "否" : "是";
+      const spuName = spus[i % spus.length];
+      const exposureCnt = Math.floor(Math.random() * 145000 + 5000);
 
       list.push({
-        primaryId: noteTitle,
+        primaryId: noteId,
         data: {
-          [mappings.note_info || 'col_note_info']: noteTitle,
-          [mappings.blogger_info || 'col_blogger_info']: blogger,
-          [mappings.note_source || 'col_note_source']: sources[i % sources.length],
-          [mappings.publish_time || 'col_publish_time']: Math.floor(publishTime),
-          [mappings.content_tags || 'col_content_tags']: tagsList[i % tagsList.length],
+          [mappings.note_info || 'col_note_info']: noteInfo,
+          [mappings.blogger_info || 'col_blogger_info']: bloggerInfo,
+          [mappings.note_source || 'col_note_source']: noteSource,
+          [mappings.publish_time || 'col_publish_time']: Math.floor(flowTime),
+          [mappings.content_tags || 'col_content_tags']: contentTags,
           [mappings.blogger_quote || 'col_blogger_quote']: bloggerQuote,
           [mappings.service_fee || 'col_service_fee']: serviceFee,
-          [mappings.is_valid_mode || 'col_is_valid_mode']: validModes[i % 10 === 0 ? 1 : 0], // 大多为有效模式
-          [mappings.spu_name || 'col_spu_name']: spus[i % spus.length],
+          [mappings.is_valid_mode || 'col_is_valid_mode']: isValidMode,
+          [mappings.spu_name || 'col_spu_name']: spuName,
           [mappings.exposure_cnt || 'col_exposure_cnt']: exposureCnt
         }
       });
     }
 
-    const hasMore = endIdx < totalCount;
+    // 时间降序
+    list.sort((a, b) => b.data[mappings.publish_time || 'col_publish_time'] - a.data[mappings.publish_time || 'col_publish_time']);
+
+    // 支持分页，每页 1000 条，396 条记录在一页全部带回
+    const pageSize = 1000;
+    let pageNum = 0;
+    if (pageToken && pageToken.startsWith("page_")) {
+      pageNum = parseInt(pageToken.split("_")[1], 10) || 0;
+    }
+    const startIdx = pageNum * pageSize;
+    const endIdx = Math.min(startIdx + pageSize, list.length);
+    const slicedList = list.slice(startIdx, endIdx);
+    const hasMore = endIdx < list.length;
     const nextPageToken = hasMore ? `page_${pageNum + 1}` : "";
 
-    console.log(`[Mock Solar] 小红书蒲公英分页同步: 页码 ${pageNum}, 本次同步 ${list.length} 条, 总数 ${totalCount}, hasMore: ${hasMore}`);
     return {
       nextPageToken: nextPageToken,
       hasMore: hasMore,
-      records: list
+      records: slicedList
     };
   } else if (syncModule === 'dy_balance') {
     // 资金对账 — 抖店余额与待结算资金
