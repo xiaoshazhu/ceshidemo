@@ -154,11 +154,16 @@ const MODULE_FIELDS: Record<string, { key: string; label: string; type: string; 
     { key: 'remark', label: '收支备注 (remark)', type: 'Text', defaultField: 'col_remark' }
   ],
   xiaohongshu_pugongying: [
-    { key: 'note_id', label: '笔记 ID (note_id)', type: 'Text', defaultField: 'col_note_id' },
-    { key: 'note_title', label: '笔记标题 (note_title)', type: 'Text', defaultField: 'col_note_title' },
-    { key: 'publish_time', label: '发布时间 (publish_time)', type: 'DateTime', defaultField: 'col_publish_time' },
-    { key: 'read_cnt', label: '阅读数 (read_cnt)', type: 'Number', defaultField: 'col_read_cnt' },
-    { key: 'like_cnt', label: '点赞数 (like_cnt)', type: 'Number', defaultField: 'col_like_cnt' }
+    { key: 'note_info', label: '笔记信息 (note_info)', type: 'Text', defaultField: 'col_note_info' },
+    { key: 'blogger_info', label: '博主信息 (blogger_info)', type: 'Text', defaultField: 'col_blogger_info' },
+    { key: 'note_source', label: '笔记来源 (note_source)', type: 'Text', defaultField: 'col_note_source' },
+    { key: 'publish_time', label: '笔记发布时间 (publish_time)', type: 'DateTime', defaultField: 'col_publish_time' },
+    { key: 'content_tags', label: '内容标签 (content_tags)', type: 'Text', defaultField: 'col_content_tags' },
+    { key: 'blogger_quote', label: '博主报价 (blogger_quote)', type: 'Number', defaultField: 'col_blogger_quote' },
+    { key: 'service_fee', label: '服务费金额 (service_fee)', type: 'Number', defaultField: 'col_service_fee' },
+    { key: 'is_valid_mode', label: '是否为有效模式 (is_valid_mode)', type: 'Text', defaultField: 'col_is_valid_mode' },
+    { key: 'spu_name', label: 'SPU名称 (spu_name)', type: 'Text', defaultField: 'col_spu_name' },
+    { key: 'exposure_cnt', label: '曝光量 (exposure_cnt)', type: 'Number', defaultField: 'col_exposure_cnt' }
   ],
   xiaohongshu_chengfeng_account: [
     { key: 'date', label: '统计日期 (date)', type: 'DateTime', defaultField: 'col_date' },

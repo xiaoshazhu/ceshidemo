@@ -1,18 +1,14 @@
 {
-  "platform": "douyin",
-  "syncModule": "account_center",
-  "shopIdParam": "130480051",
+  "platform": "xiaohongshu",
+  "syncModule": "xiaohongshu_pugongying",
+  "shopIdParam": "603b4cca000000000100a72f",
   "dateRange": "30",
   "fieldMappings": {
-    "flow_id": "col_flow_id",
-    "order_id": "col_order_id",
-    "sub_order_id": "col_sub_order_id",
-    "check_time": "col_check_time_v3",
-    "biz_scene": "col_biz_scene",
-    "trade_amount": "col_trade_amount",
-    "current_balance": "col_current_balance",
-    "frozen_amount": "col_frozen_amount",
-    "remark": "col_remark"
+    "note_id": "col_note_id",
+    "note_title": "col_note_title",
+    "publish_time": "col_publish_time",
+    "read_cnt": "col_read_cnt",
+    "like_cnt": "col_like_cnt"
   },
   "refreshFrequency": "hour",
   "merchantUid": "7291551609760710657",
@@ -22,8 +18,8 @@
   "customEndDate": "",
   "accountInfo": {
     "mode": "模拟登录",
-    "name": "订单管理 (ID: 130480051)",
-    "cookie": "passport_csrf_token=f654e439b156444d48dadd097020403c; passport_csrf_token_default=f654e439b156444d48dadd097020403c; s_v_web_id=verify_mqhgewc4_zdjiZWMX_XyUk_4yuS_9po6_OMSDf3GnHf4v; ttcid=f0b51d00fa9441fea53b077f6029ea4625; PHPSESSID=50fecabd86e4c77e339aa80dbb0f7251; PHPSESSID_SS=50fecabd86e4c77e339aa80dbb0f7251; ecom_us_lt=6d4f6fc5e7be0016ba3e570b2ccf500cb6ce4a5977fe29b51e9bfe3f7d08dc53; ecom_us_lt_ss=6d4f6fc5e7be0016ba3e570b2ccf500cb6ce4a5977fe29b51e9bfe3f7d08dc53; COMPASS_LUOPAN_DT=session_7652647292104737070; _tea_utm_cache_2631=undefined; zsgw_business_data=%7B%22uuid%22%3A%22459bee55-bff5-4bf2-a7c8-8817f7913faa%22%2C%22platform%22%3A%22pc%22%2C%22source%22%3A%22seo.page.home%22%7D; gfkadpd=4272,23756; _tea_utm_cache_3813={%22utm_source%22:%22qianchuan-origin-entrance%22%2C%22utm_medium%22:%22doudian-pc%22%2C%22utm_campaign%22:%22tuiguangtab%22}; _tea_utm_cache_1215={%22utm_source%22:%22qianchuan-origin-entrance%22%2C%22utm_medium%22:%22doudian-pc%22%2C%22utm_campaign%22:%22tuiguangtab%22}; _tea_utm_cache_486645={%22utm_source%22:%22qianchuan-origin-entrance%22%2C%22utm_medium%22:%22doudian-pc%22%2C%22utm_campaign%22:%22tuiguangtab%22}; _tea_utm_cache_499020={%22utm_source%22:%22qianchuan-origin-entrance%22%2C%22utm_medium%22:%22doudian-pc%22%2C%22utm_campaign%22:%22tuiguangtab%22}; _tea_utm_cache_518298={%22utm_source%22:%22qianchuan-origin-entrance%22%2C%22utm_medium%22:%22doudian-pc%22%2C%22utm_campaign%22:%22tuiguangtab%22}; _tea_utm_cache_7418={%22utm_source%22:%22qianchuan-origin-entrance%22%2C%22utm_medium%22:%22doudian-pc%22%2C%22utm_campaign%22:%22tuiguangtab%22}; _tea_utm_cache_409608={%22utm_source%22:%22qianchuan-origin-entrance%22%2C%22utm_medium%22:%22doudian-pc%22%2C%22utm_campaign%22:%22tuiguangtab%22}; _tea_utm_cache_1574={%22utm_source%22:%22qianchuan-origin-entrance%22%2C%22utm_medium%22:%22doudian-pc%22%2C%22utm_campaign%22:%22tuiguangtab%22}; _tea_utm_cache_354423={%22utm_source%22:%22qianchuan-origin-entrance%22%2C%22utm_medium%22:%22doudian-pc%22%2C%22utm_campaign%22:%22tuiguangtab%22}; _tea_utm_cache_607429={%22utm_source%22:%22qianchuan-origin-entrance%22%2C%22utm_medium%22:%22doudian-pc%22%2C%22utm_campaign%22:%22tuiguangtab%22}; tt_scid=8cqdj0ujhwKLFdIOIrsHsD0uLVn3wGi1B7MmNm791Zn9jYOuafbkOSADb-7JQ78Z338a; _tea_utm_cache_472893=undefined; _tea_utm_cache_643623=undefined; BUYIN_SASID=SID2_7654383590843121946; ecom_gray_shop_id=130480051; csrf_session_id=e27f3323091bb9546c2647825ed8694e; Hm_lvt_b6520b076191ab4b36812da4c90f7a5e=1781663444,1782088742,1782129697,1782264256; HMACCOUNT=AF1442CB68028041; Hm_lpvt_b6520b076191ab4b36812da4c90f7a5e=1782265118",
-    "shopId": "130480051"
+    "name": "数据中心 - 小红书蒲公英 (ID: default)",
+    "cookie": "a1=19eb44fc681iwz4lc4qdnc8cfmovwvmab1uf1wtg630000318104; webId=5e81dc58be5f2efad70801964d01a6cd; gid=yjdD44ifSjDyyjdD44iSKyE9Yy3Eu41S4AfI7kKSYSi6liq8hEh60y888qyYy848SyYqW42D; solar.beaker.session.id=AT-68c517654789722129334284qaqz4x8mf6kth3sd; access-token-pgy.xiaohongshu.com=customer.pgy.AT-68c517654789722129334284qaqz4x8mf6kth3sd; access-token-pgy.beta.xiaohongshu.com=customer.pgy.AT-68c517654789722129334284qaqz4x8mf6kth3sd; sec_poison_id=d1728e1b-e017-4abc-bfd9-a3c7aadb5945; websectiga=8886be45f388a1ee7bf611a69f3e174cae48f1ea02c0f8ec3256031b8be9c7ee; xsecappid=ratlin; loadts=1782282004362",
+    "shopId": "default"
   }
 }

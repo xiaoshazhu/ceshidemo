@@ -168,8 +168,8 @@ const getTableRecords = async (reqBody) => {
           dataObj[mappings.product_name || 'col_product_name'] = item.product_name || item.productName || item.goods_name || "";
 
         } else if (syncModule === 'xiaohongshu_pugongying') {
-          const noteId = item.note_id || item.id || `NOTE_${index}`;
-          primaryId = noteId;
+          const noteInfo = item.note_info || item.note_title || item.title || item.name || `笔记_${index}`;
+          primaryId = noteInfo;
           
           let timestamp = Date.now();
           const timeVal = item.publish_time || item.create_time || item.post_time || new Date().toISOString();
@@ -180,11 +180,16 @@ const getTableRecords = async (reqBody) => {
             timestamp = parsedTime;
           }
 
-          dataObj[mappings.note_id || 'col_note_id'] = noteId;
-          dataObj[mappings.note_title || 'col_note_title'] = item.note_title || item.title || item.name || `笔记_${index}`;
+          dataObj[mappings.note_info || 'col_note_info'] = noteInfo;
+          dataObj[mappings.blogger_info || 'col_blogger_info'] = item.blogger_info || item.blogger_name || item.author || `博主_${index}`;
+          dataObj[mappings.note_source || 'col_note_source'] = item.note_source || item.source || "蒲公英平台合作";
           dataObj[mappings.publish_time || 'col_publish_time'] = timestamp;
-          dataObj[mappings.read_cnt || 'col_read_cnt'] = Number(item.read_cnt || item.read_num || item.view_cnt || 0);
-          dataObj[mappings.like_cnt || 'col_like_cnt'] = Number(item.like_cnt || item.like_num || item.like_count || 0);
+          dataObj[mappings.content_tags || 'col_content_tags'] = item.content_tags || item.tags || "好物推荐, 时尚穿搭";
+          dataObj[mappings.blogger_quote || 'col_blogger_quote'] = Number(item.blogger_quote || item.price || item.quote || 0);
+          dataObj[mappings.service_fee || 'col_service_fee'] = Number(item.service_fee || item.fee || 0);
+          dataObj[mappings.is_valid_mode || 'col_is_valid_mode'] = item.is_valid_mode || item.valid_mode || "是";
+          dataObj[mappings.spu_name || 'col_spu_name'] = item.spu_name || item.spuName || "爆款单品";
+          dataObj[mappings.exposure_cnt || 'col_exposure_cnt'] = Number(item.exposure_cnt || item.read_cnt || item.view_cnt || 0);
 
         } else {
           // 默认订单管理等
@@ -306,6 +311,67 @@ const getTableRecords = async (reqBody) => {
     return {
       nextPageToken: "",
       hasMore: false,
+      records: list
+    };
+  } else if (syncModule === 'xiaohongshu_pugongying') {
+    const totalCount = 396; // 王某指定的最近一个月期望条数
+    const pageSize = 100;
+    
+    let pageNum = 0;
+    if (pageToken && pageToken.startsWith("page_")) {
+      pageNum = parseInt(pageToken.split("_")[1], 10) || 0;
+    }
+    
+    const startIdx = pageNum * pageSize;
+    const endIdx = Math.min(startIdx + pageSize, totalCount);
+    
+    const bloggers = [
+      "小红薯穿搭日记", "时尚达人Lily", "美妆测评博主A", "穿搭分享小能手", 
+      "好物推荐官喵喵", "潮流前线阿风", "极简风生活家", "辣妈穿搭日记", 
+      "文艺复兴穿搭", "吃喝玩乐小太阳"
+    ];
+    const tagsList = [
+      "夏季穿搭, 显瘦搭配", "小众设计, OOTD", "国潮单品, 平价好物", "美妆护肤, 空瓶记",
+      "夏日防晒, 户外好物", "法式复古, 温柔穿搭", "职场通勤, 极简高智", "母婴好物, 育儿日常",
+      "家居好物, 提升幸福感", "周末去哪儿, 小众景点"
+    ];
+    const sources = ["蒲公英合作项目", "私域达人直连", "MCN机构代投", "达人自主申报"];
+    const validModes = ["是", "否"];
+    const spus = ["冰丝针织吊带", "高腰直筒老爹牛仔裤", "日系防晒衣", "纯棉宽松基础短袖", "平价控油防晒乳"];
+
+    for (let i = startIdx; i < endIdx; i++) {
+      const blogger = bloggers[i % bloggers.length] + `_${i}`;
+      const noteTitle = `小红书合作爆款笔记_最近一个月第${i+1}期_#${blogger}`;
+      const timeOffset = (30 - (i * 30 / totalCount)) * 24 * 3600000; // 均匀分布在最近一个月
+      const publishTime = Date.now() - timeOffset;
+      const bloggerQuote = Math.floor(Math.random() * 8000) + 1500;
+      const serviceFee = Number((bloggerQuote * 0.1).toFixed(2));
+      const exposureCnt = Math.floor(Math.random() * 80000) + 5000;
+
+      list.push({
+        primaryId: noteTitle,
+        data: {
+          [mappings.note_info || 'col_note_info']: noteTitle,
+          [mappings.blogger_info || 'col_blogger_info']: blogger,
+          [mappings.note_source || 'col_note_source']: sources[i % sources.length],
+          [mappings.publish_time || 'col_publish_time']: Math.floor(publishTime),
+          [mappings.content_tags || 'col_content_tags']: tagsList[i % tagsList.length],
+          [mappings.blogger_quote || 'col_blogger_quote']: bloggerQuote,
+          [mappings.service_fee || 'col_service_fee']: serviceFee,
+          [mappings.is_valid_mode || 'col_is_valid_mode']: validModes[i % 10 === 0 ? 1 : 0], // 大多为有效模式
+          [mappings.spu_name || 'col_spu_name']: spus[i % spus.length],
+          [mappings.exposure_cnt || 'col_exposure_cnt']: exposureCnt
+        }
+      });
+    }
+
+    const hasMore = endIdx < totalCount;
+    const nextPageToken = hasMore ? `page_${pageNum + 1}` : "";
+
+    console.log(`[Mock Solar] 小红书蒲公英分页同步: 页码 ${pageNum}, 本次同步 ${list.length} 条, 总数 ${totalCount}, hasMore: ${hasMore}`);
+    return {
+      nextPageToken: nextPageToken,
+      hasMore: hasMore,
       records: list
     };
   } else if (syncModule === 'dy_balance') {

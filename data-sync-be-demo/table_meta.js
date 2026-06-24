@@ -814,20 +814,26 @@ const getTableMeta = (module) => {
         tableName: "小红书推广-蒲公英达人合作笔记表",
         fields: [
           {
-            fieldId: "col_note_id",
-            fieldName: "笔记 ID",
+            fieldId: "col_note_info",
+            fieldName: "笔记信息",
             fieldType: 1, // Text
             isPrimary: true
           },
           {
-            fieldId: "col_note_title",
-            fieldName: "笔记标题",
+            fieldId: "col_blogger_info",
+            fieldName: "博主信息",
+            fieldType: 1, // Text
+            isPrimary: false
+          },
+          {
+            fieldId: "col_note_source",
+            fieldName: "笔记来源",
             fieldType: 1, // Text
             isPrimary: false
           },
           {
             fieldId: "col_publish_time",
-            fieldName: "发布时间",
+            fieldName: "笔记发布时间",
             fieldType: 5, // DateTime
             isPrimary: false,
             property: {
@@ -835,17 +841,44 @@ const getTableMeta = (module) => {
             }
           },
           {
-            fieldId: "col_read_cnt",
-            fieldName: "阅读数",
+            fieldId: "col_content_tags",
+            fieldName: "内容标签",
+            fieldType: 1, // Text
+            isPrimary: false
+          },
+          {
+            fieldId: "col_blogger_quote",
+            fieldName: "博主报价",
             fieldType: 2, // Number
             isPrimary: false,
             property: {
-              formatter: "#,##0"
+              formatter: "#,##0.00"
             }
           },
           {
-            fieldId: "col_like_cnt",
-            fieldName: "点赞数",
+            fieldId: "col_service_fee",
+            fieldName: "服务费金额",
+            fieldType: 2, // Number
+            isPrimary: false,
+            property: {
+              formatter: "#,##0.00"
+            }
+          },
+          {
+            fieldId: "col_is_valid_mode",
+            fieldName: "是否为有效模式",
+            fieldType: 1, // Text
+            isPrimary: false
+          },
+          {
+            fieldId: "col_spu_name",
+            fieldName: "SPU名称",
+            fieldType: 1, // Text
+            isPrimary: false
+          },
+          {
+            fieldId: "col_exposure_cnt",
+            fieldName: "曝光量",
             fieldType: 2, // Number
             isPrimary: false,
             property: {
