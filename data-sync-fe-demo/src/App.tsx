@@ -136,10 +136,17 @@ const MODULE_FIELDS: Record<string, { key: string; label: string; type: string; 
     { key: 'qty', label: '数量 (qty)', type: 'Number', defaultField: 'col_qty' }
   ],
   jushuitan_inventory: [
-    { key: 'sku_id', label: '商品 SKU 编码 (sku_id)', type: 'Text', defaultField: 'col_sku_id' },
-    { key: 'sku_name', label: 'SKU 名称 (sku_name)', type: 'Text', defaultField: 'col_sku_name' },
-    { key: 'inventory_qty', label: '库存数量 (inventory_qty)', type: 'Number', defaultField: 'col_inventory_qty' },
-    { key: 'lock_qty', label: '锁库数量 (lock_qty)', type: 'Number', defaultField: 'col_lock_qty' }
+    { key: 'seq', label: '序号 (seq)', type: 'Number', defaultField: 'col_seq' },
+    { key: 'pic_url', label: '图片 (pic_url)', type: 'Text', defaultField: 'col_pic_url' },
+    { key: 'style_code', label: '款式编码 (style_code)', type: 'Text', defaultField: 'col_style_code' },
+    { key: 'sku_id', label: '商品编码 (sku_id)', type: 'Text', defaultField: 'col_sku_id' },
+    { key: 'sku_name', label: '商品名称 (sku_name)', type: 'Text', defaultField: 'col_sku_name' },
+    { key: 'color_spec', label: '颜色及规格 (color_spec)', type: 'Text', defaultField: 'col_color_spec' },
+    { key: 'tags', label: '商品标签 (tags)', type: 'Text', defaultField: 'col_tags' },
+    { key: 'inventory_qty', label: '实际库存数 (inventory_qty)', type: 'Number', defaultField: 'col_inventory_qty' },
+    { key: 'lock_qty', label: '订单占有数 (lock_qty)', type: 'Number', defaultField: 'col_lock_qty' },
+    { key: 'usable_qty', label: '可用数量 (usable_qty)', type: 'Number', defaultField: 'col_usable_qty' },
+    { key: 'saleable_days', label: '库存可售天数 (saleable_days)', type: 'Number', defaultField: 'col_saleable_days' }
   ],
   qianniu_bill_wechat: [
     { key: 'flow_id', label: '流水号 (flow_id)', type: 'Text', defaultField: 'col_flow_id' },
@@ -213,7 +220,7 @@ const PLATFORMS_MAP: PlatformConfig[] = [
   { key: 'compass', name: '电商罗盘', desc: '包含抖音电商罗盘核心数据', icon: '🧭', url: 'https://compass.jinritemai.com/' },
   { key: 'jingmai', name: '京麦 (金麦)', desc: '京东商家开放平台与后台数据', icon: '📦', url: 'https://passport.shop.jd.com/' },
   { key: 'qianchuan', name: '巨量千川', desc: '巨量千川广告投放与素材分析', icon: '🌊', url: 'https://qianchuan.jinritemai.com/' },
-  { key: 'jushuitan', name: '聚水潭 ERP', desc: '订单、出入库与商品库存数据', icon: '💧', url: 'https://www.jushuitan.com/login.html' },
+  { key: 'jushuitan', name: '聚水潭 ERP', desc: '订单、出入库与商品库存数据', icon: '💧', url: 'https://www.erp321.com/' },
   { key: 'qianniu', name: '千牛工作台', desc: '微信/支付宝聚合账单与店铺管理', icon: '🐂', url: 'https://qn.taobao.com/' },
   { key: 'xiaohongshu', name: '小红书', desc: '包含小红书蒲公英、千帆平台', icon: '📕', url: 'https://ark.xiaohongshu.com/' }
 ];
@@ -371,7 +378,7 @@ const getDynamicLoginUrl = (pKey: string, mKey: string): string => {
     compass: 'https://compass.jinritemai.com/',
     jingmai: 'https://passport.shop.jd.com/',
     qianchuan: 'https://qianchuan.jinritemai.com/',
-    jushuitan: 'https://www.jushuitan.com/login.html',
+    jushuitan: 'https://www.erp321.com/',
     qianniu: 'https://qn.taobao.com/'
   };
   return defaultUrls[pKey] || 'https://www.baidu.com';
@@ -985,12 +992,12 @@ export default function App(): JSX.Element {
     const code = `javascript:(function(){
       var cookie = document.cookie;
       var shopId = '';
-      var match = cookie.match(/shop_id=(\\d+)/) || cookie.match(/shop_id_str=(\\d+)/) || cookie.match(/member_id=(\\d+)/) || cookie.match(/seller_id=(\\d+)/) || cookie.match(/userId=(\\d+)/) || cookie.match(/customer_id=(\\d+)/);
+      var match = cookie.match(/(?:owner_co_id|authorize_co_id|co_id|shop_id|shop_id_str|member_id|seller_id|userId|customer_id)=(\\d+)/);
       if (match) {
         shopId = match[1];
       }
       if (!shopId) {
-        var urlMatch = window.location.href.match(/[?&](shopId|shop_id|sellerId|seller_id|advertiserId|advertiser_id|userId|customer_id)=(\\d+)/);
+        var urlMatch = window.location.href.match(/[?&](owner_co_id|authorize_co_id|co_id|shopId|shop_id|sellerId|seller_id|advertiserId|advertiser_id|userId|customer_id)=(\\d+)/);
         if (urlMatch) shopId = urlMatch[2];
       }
       if (!shopId) {

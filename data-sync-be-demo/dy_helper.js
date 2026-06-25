@@ -160,6 +160,55 @@ async function fetchRealDoudianData(cookie, shopId, syncModule, configOrDateRang
       page: pageNum,
       page_size: 20
     });
+  } else if (syncModule === 'jushuitan_inventory') {
+    // 聚水潭商品库存查询接口
+    const coId = shopId || "15422431";
+    requestUrl = `https://apiweb.erp321.com/webapi/ItemApi/ItemSku/GetPageListV2?__from=web_component&owner_co_id=${coId}&authorize_co_id=${coId}`;
+    
+    // 从 Cookie 中智能提取并定位 uid
+    let uidVal = "22013638";
+    const uidMatch = cookie.match(/u_id=(\d+)/);
+    if (uidMatch) uidVal = uidMatch[1];
+
+    headers['Referer'] = 'https://apiweb.erp321.com/';
+    headers['Origin'] = 'https://apiweb.erp321.com';
+    headers['gwfp'] = 'd23eb015e172e99146fc6a2ae051609b';
+    headers['webbox-route-path'] = '/erp-components/goods-selector/';
+    headers['webbox-request-id'] = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+      const r = Math.random() * 16 | 0;
+      const v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+    
+    requestMethod = 'POST';
+    requestBody = JSON.stringify({
+      ip: "",
+      uid: uidVal,
+      coid: coId,
+      page: {
+        currentPage: pageNum,
+        pageSize: 50,
+        pageAction: 1
+      },
+      data: {
+        sku_type: 1,
+        queryFlds: [
+          "pic", "i_id", "sku_id", "name", "properties_value", "labels", "qty", "order_lock", 
+          "orderable", "salesTrends30", "daysInventory", "purchaseQty", "purchase_qty", 
+          "purchase_plan_arrive", "lock_qty", "lwh_result_lock_qty", "min_qty", "max_qty", 
+          "min_day", "max_day", "pick_lock", "return_qty", "in_qty", "allocate_qty", 
+          "sale_refund_qty", "virtual_qty", "unlock_qty", "stock_opensync", "bin", 
+          "sales_qty_yesterday", "sales_qty_7", "sales_qty_15", "afs_qty_yesterday", 
+          "afs_qty_7", "afs_qty_15", "qty_modified", "multiTimeStocks_3", "multiTimeStocks_5", 
+          "multiTimeStocks_7", "multiTimeStocks_10", "multiTimeStocks_15", "multiTimeStocks_20", 
+          "multiTimeStocks_25", "multiTimeStocks_30", "multiTimeStocks_45", "is_series_number", 
+          "sale_price", "c_id", "supplier_id", "supplier_name", "pic_big"
+        ],
+        orderBy: "",
+        c_id: "",
+        stock_type: 6
+      }
+    });
   } else {
     // 默认：订单发货 -> 订单管理 (order_report 等)
     requestUrl = `https://fxg.jinritemai.com/ffa/g/order/searchList`;
@@ -191,7 +240,19 @@ async function fetchRealDoudianData(cookie, shopId, syncModule, configOrDateRang
       fetchOptions.body = requestBody;
     }
 
-    const response = await fetch(requestUrl, fetchOptions);
+    let response = await fetch(requestUrl, fetchOptions);
+
+    // 针对聚水潭库存接口，如返回 405 Method Not Allowed，则尝试回退到 GET 请求方式重试
+    if (syncModule === 'jushuitan_inventory' && requestMethod === 'POST' && response.status === 405) {
+      console.warn(`[Mode B] 聚水潭 GetPageListV2 POST 请求返回 405，正在自动降级使用 GET 方式重试...`);
+      const getUrl = `${requestUrl}&page_index=${pageNum}&page_size=50&page=${pageNum}&limit=50`;
+      const getOptions = {
+        method: 'GET',
+        headers: headers,
+        timeout: 8000
+      };
+      response = await fetch(getUrl, getOptions);
+    }
     
     if (response.status === 401 || response.status === 403) {
       throw new Error("CredentialsExpired: 凭证失效(Cookie过期)");
@@ -221,11 +282,13 @@ async function fetchRealDoudianData(cookie, shopId, syncModule, configOrDateRang
     let list = [];
     if (Array.isArray(resJson.list)) {
       list = resJson.list;
+    } else if (Array.isArray(resJson.items)) {
+      list = resJson.items;
     } else if (resJson.data) {
       if (Array.isArray(resJson.data)) {
         list = resJson.data;
       } else {
-        list = resJson.data.list || resJson.data.data_list || resJson.data.flows || resJson.data.flow_list || resJson.data.note_list || [];
+        list = resJson.data.list || resJson.data.data_list || resJson.data.items || resJson.data.flows || resJson.data.flow_list || resJson.data.note_list || [];
       }
     }
     

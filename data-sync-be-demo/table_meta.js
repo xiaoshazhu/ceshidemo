@@ -703,23 +703,56 @@ const getTableMeta = (module) => {
       };
     case 'jushuitan_inventory':
       return {
-        tableName: "聚水潭ERP-库存同步表",
+        tableName: "聚水潭ERP-商品库存同步表",
         fields: [
           {
+            fieldId: "col_seq",
+            fieldName: "序号",
+            fieldType: 2, // Number
+            isPrimary: false,
+            property: {
+              formatter: "#,##0"
+            }
+          },
+          {
+            fieldId: "col_pic_url",
+            fieldName: "图片",
+            fieldType: 1, // Text
+            isPrimary: false
+          },
+          {
+            fieldId: "col_style_code",
+            fieldName: "款式编码",
+            fieldType: 1, // Text
+            isPrimary: false
+          },
+          {
             fieldId: "col_sku_id",
-            fieldName: "商品 SKU 编码",
+            fieldName: "商品编码",
             fieldType: 1, // Text
             isPrimary: true
           },
           {
             fieldId: "col_sku_name",
-            fieldName: "SKU 名称",
+            fieldName: "商品名称",
+            fieldType: 1, // Text
+            isPrimary: false
+          },
+          {
+            fieldId: "col_color_spec",
+            fieldName: "颜色及规格",
+            fieldType: 1, // Text
+            isPrimary: false
+          },
+          {
+            fieldId: "col_tags",
+            fieldName: "商品标签",
             fieldType: 1, // Text
             isPrimary: false
           },
           {
             fieldId: "col_inventory_qty",
-            fieldName: "库存数量",
+            fieldName: "实际库存数",
             fieldType: 2, // Number
             isPrimary: false,
             property: {
@@ -728,7 +761,25 @@ const getTableMeta = (module) => {
           },
           {
             fieldId: "col_lock_qty",
-            fieldName: "锁库数量",
+            fieldName: "订单占有数",
+            fieldType: 2, // Number
+            isPrimary: false,
+            property: {
+              formatter: "#,##0"
+            }
+          },
+          {
+            fieldId: "col_usable_qty",
+            fieldName: "可用数量",
+            fieldType: 2, // Number
+            isPrimary: false,
+            property: {
+              formatter: "#,##0"
+            }
+          },
+          {
+            fieldId: "col_saleable_days",
+            fieldName: "库存可售天数",
             fieldType: 2, // Number
             isPrimary: false,
             property: {
