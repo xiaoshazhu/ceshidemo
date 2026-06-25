@@ -1,14 +1,17 @@
 {
-  "platform": "xiaohongshu",
-  "syncModule": "xiaohongshu_pugongying",
-  "shopIdParam": "603b4cca000000000100a72f",
+  "platform": "qianniu",
+  "syncModule": "qianniu_fund_detail",
+  "shopIdParam": "499066699",
   "dateRange": "30",
   "fieldMappings": {
-    "note_id": "col_note_id",
-    "note_title": "col_note_title",
-    "publish_time": "col_publish_time",
-    "read_cnt": "col_read_cnt",
-    "like_cnt": "col_like_cnt"
+    "record_time": "col_record_time",
+    "flow_id": "col_flow_id",
+    "order_id": "col_order_id",
+    "bill_type": "col_bill_type",
+    "income": "col_income",
+    "outcome": "col_outcome",
+    "biz_desc": "col_biz_desc",
+    "remark": "col_remark"
   },
   "refreshFrequency": "hour",
   "merchantUid": "7291551609760710657",
@@ -18,8 +21,8 @@
   "customEndDate": "",
   "accountInfo": {
     "mode": "模拟登录",
-    "name": "数据中心 - 小红书蒲公英 (ID: default)",
-    "cookie": "a1=19eb44fc681iwz4lc4qdnc8cfmovwvmab1uf1wtg630000318104; webId=5e81dc58be5f2efad70801964d01a6cd; gid=yjdD44ifSjDyyjdD44iSKyE9Yy3Eu41S4AfI7kKSYSi6liq8hEh60y888qyYy848SyYqW42D; solar.beaker.session.id=AT-68c517654789722129334284qaqz4x8mf6kth3sd; access-token-pgy.xiaohongshu.com=customer.pgy.AT-68c517654789722129334284qaqz4x8mf6kth3sd; access-token-pgy.beta.xiaohongshu.com=customer.pgy.AT-68c517654789722129334284qaqz4x8mf6kth3sd; sec_poison_id=d1728e1b-e017-4abc-bfd9-a3c7aadb5945; websectiga=8886be45f388a1ee7bf611a69f3e174cae48f1ea02c0f8ec3256031b8be9c7ee; xsecappid=ratlin; loadts=1782282004362",
-    "shopId": "default"
+    "name": "高原安旗舰店:财务 (ID: 499066699)",
+    "cookie": "t=505f83f5d8c282de4061a83e494bc62e; _tb_token_=ee1b7e5ea7b77; xlly_s=1; 3PcFlag=1782368660285; sn=%E9%AB%98%E5%8E%9F%E5%AE%89%E6%97%97%E8%88%B0%E5%BA%97%3A%E8%B4%A2%E5%8A%A1; _cc_=UtASsssmfA%3D%3D; cancelledSubSites=empty; csg=0827e12b; cna=M7fDIqbuPGQCAbaK7pzTtgtN; uc1=cookie14=UoYWPyfIEcBRNg%3D%3D&cookie21=Vq8l%2BKCLiYYu; isg=BJycKm5_GpOifO5P9rEOzEffbbxOFUA_XHqVSnad8gdqwT9LnCXkzpBiJyk5yXiX; mtop_partitioned_detect=1; _m_h5_tk=ec06106bee17597aae1667c7169c30fb_1782385078919; _m_h5_tk_enc=a5a3938060e68bd53d47ee85ad168d54; tfstk=hNMxN-gsEeHXCRKk9g4rCN2gC3Y3cAq_fcoNfrwjmdas-4wii5m_fR3SSnzmfEutBzgboSxqfGEsrzr4st201F3tJ5DmIAutB24yqevhcZJ4wRz6IRiHK90aCeYHEpmq0RuDCHusG_Z7zlBfcSg1FaZgPlZ_fVa7NkZhlRws50t8zlw_5Vw620azfRas5Vi5PhFXmpIk2rDAKw4IczimmYB3MyibyurrFRPxEv_hRawsGm08tjLdHjnjTVrIlZTY2xnKBXgWEtetVXMTFM5oI31N_IZy7wn7v3ahxuE8-npO_1Py4uUH2sCN_7-z2yxzJ15ag75..",
+    "shopId": "499066699"
   }
 }

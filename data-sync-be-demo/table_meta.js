@@ -860,6 +860,69 @@ const getTableMeta = (module) => {
           }
         ]
       };
+    case 'qianniu_fund_detail':
+      return {
+        tableName: "千牛工作台-收支明细表",
+        fields: [
+          {
+            fieldId: "col_record_time",
+            fieldName: "入账时间",
+            fieldType: 5, // DateTime 类型
+            isPrimary: false,
+            property: {
+              formatter: "yyyy-MM-dd HH:mm"
+            }
+          },
+          {
+            fieldId: "col_flow_id",
+            fieldName: "支付流水号",
+            fieldType: 1, // Text 类型
+            isPrimary: true // 设为唯一主键
+          },
+          {
+            fieldId: "col_order_id",
+            fieldName: "淘宝订单号",
+            fieldType: 1, // Text 类型
+            isPrimary: false
+          },
+          {
+            fieldId: "col_bill_type",
+            fieldName: "入账类型",
+            fieldType: 1, // Text 类型
+            isPrimary: false
+          },
+          {
+            fieldId: "col_income",
+            fieldName: "收入金额",
+            fieldType: 2, // Number 类型
+            isPrimary: false,
+            property: {
+              formatter: "#,##0.00"
+            }
+          },
+          {
+            fieldId: "col_outcome",
+            fieldName: "支出金额",
+            fieldType: 2, // Number 类型
+            isPrimary: false,
+            property: {
+              formatter: "#,##0.00"
+            }
+          },
+          {
+            fieldId: "col_biz_desc",
+            fieldName: "业务描述",
+            fieldType: 1, // Text 类型
+            isPrimary: false
+          },
+          {
+            fieldId: "col_remark",
+            fieldName: "备注",
+            fieldType: 1, // Text 类型
+            isPrimary: false
+          }
+        ]
+      };
     case 'xiaohongshu_pugongying':
       return {
         tableName: "小红书推广-蒲公英达人合作笔记表",

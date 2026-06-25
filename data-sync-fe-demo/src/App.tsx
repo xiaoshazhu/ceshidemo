@@ -160,6 +160,16 @@ const MODULE_FIELDS: Record<string, { key: string; label: string; type: string; 
     { key: 'check_time', label: '动账时间 (check_time)', type: 'DateTime', defaultField: 'col_check_time' },
     { key: 'remark', label: '收支备注 (remark)', type: 'Text', defaultField: 'col_remark' }
   ],
+  qianniu_fund_detail: [
+    { key: 'record_time', label: '入账时间 (record_time)', type: 'DateTime', defaultField: 'col_record_time' },
+    { key: 'flow_id', label: '支付流水号 (flow_id)', type: 'Text', defaultField: 'col_flow_id' },
+    { key: 'order_id', label: '淘宝订单号 (order_id)', type: 'Text', defaultField: 'col_order_id' },
+    { key: 'bill_type', label: '入账类型 (bill_type)', type: 'Text', defaultField: 'col_bill_type' },
+    { key: 'income', label: '收入金额 (income)', type: 'Number', defaultField: 'col_income' },
+    { key: 'outcome', label: '支出金额 (outcome)', type: 'Number', defaultField: 'col_outcome' },
+    { key: 'biz_desc', label: '业务描述 (biz_desc)', type: 'Text', defaultField: 'col_biz_desc' },
+    { key: 'remark', label: '备注 (remark)', type: 'Text', defaultField: 'col_remark' }
+  ],
   xiaohongshu_pugongying: [
     { key: 'note_info', label: '笔记信息 (note_info)', type: 'Text', defaultField: 'col_note_info' },
     { key: 'blogger_info', label: '博主信息 (blogger_info)', type: 'Text', defaultField: 'col_blogger_info' },
@@ -331,7 +341,8 @@ const getTreeDataForPlatform = (pKey: string) => {
           selectable: false,
           children: [
             { title: '微信支付聚合账单', value: 'qianniu_bill_wechat' },
-            { title: '支付宝支付账单', value: 'qianniu_bill_alipay' }
+            { title: '支付宝支付账单', value: 'qianniu_bill_alipay' },
+            { title: '聚合结算账户收支明细', value: 'qianniu_fund_detail' }
           ]
         }
       ];
@@ -372,6 +383,10 @@ const getDynamicLoginUrl = (pKey: string, mKey: string): string => {
     if (mKey === 'alimama_union') return 'https://pub.alimama.com/';
     if (mKey === 'alimama_wanxiang') return 'https://wanxiang.taobao.com/';
     return 'https://www.alimama.com/';
+  }
+  if (pKey === 'qianniu') {
+    if (mKey === 'qianniu_fund_detail') return 'https://myseller.taobao.com/home.htm/whale-accountant/pay/capital/home?active=fund_detail';
+    return 'https://myseller.taobao.com/';
   }
   const defaultUrls: Record<string, string> = {
     douyin: 'https://fxg.jinritemai.com/login/common?extra=%7B%22target_url%22%3A%22https%3A%2F%2Ffxg.jinritemai.com%2Fffa%2Fmshop%2Fhomepage%2Findex%22%7D',
@@ -522,14 +537,18 @@ export default function App(): JSX.Element {
     const defaultMod = defaultModules[platform] || validModules[0] || 'order_report';
 
     if (activeAcc) {
-      setShopIdParam(activeAcc.shopId || '');
+      setShopIdParam(activeAcc.shopId || (platform === 'qianniu' ? '499066699' : ''));
       if (activeAcc.module && validModules.includes(activeAcc.module)) {
         setSyncModule(activeAcc.module);
       } else {
         setSyncModule(defaultMod);
       }
     } else {
-      setShopIdParam('');
+      if (platform === 'qianniu') {
+        setShopIdParam('499066699');
+      } else {
+        setShopIdParam('');
+      }
       setSyncModule(defaultMod);
     }
   }, [platform, accounts]);
@@ -991,10 +1010,15 @@ export default function App(): JSX.Element {
     const hostOrigin = window.location.origin;
     const code = `javascript:(function(){
       var cookie = document.cookie;
-      var shopId = '';
-      var match = cookie.match(/(?:owner_co_id|authorize_co_id|co_id|shop_id|shop_id_str|member_id|seller_id|userId|customer_id)=(\\d+)/);
-      if (match) {
-        shopId = match[1];
+      var shopId = '${shopIdParam}';
+      if (!shopId && '${platform}' === 'qianniu') {
+        shopId = '499066699';
+      }
+      if (!shopId) {
+        var match = cookie.match(/(?:owner_co_id|authorize_co_id|co_id|shop_id|shop_id_str|member_id|seller_id|userId|customer_id)=(\\d+)/);
+        if (match) {
+          shopId = match[1];
+        }
       }
       if (!shopId) {
         var urlMatch = window.location.href.match(/[?&](owner_co_id|authorize_co_id|co_id|shopId|shop_id|sellerId|seller_id|advertiserId|advertiser_id|userId|customer_id)=(\\d+)/);
@@ -1003,12 +1027,60 @@ export default function App(): JSX.Element {
       if (!shopId) {
         shopId = prompt("请输入您的 ${selectedPlatform.name} 店铺 ID / 账号 ID (选填/必填):");
       }
+      var shopName = document.title || "${selectedPlatform.name}店铺";
+      if ('${platform}' === 'qianniu') {
+        shopName = '高原安旗舰店:财务';
+      }
+
+      if ('${platform}' === 'qianniu' && window.lib && window.lib.mtop) {
+        var cycleFrom = new Date(Date.now() - 30 * 24 * 3600000).toISOString().split('T')[0];
+        var cycleTo = new Date().toISOString().split('T')[0];
+        window.lib.mtop.request({
+          api: 'mtop.taobao.finance.fund.bill.query',
+          v: '1.0',
+          data: {
+            pageNo: 1,
+            pageSize: 100,
+            billCycleFrom: cycleFrom,
+            billCycleTo: cycleTo,
+            billCode: "BILL_DETAIL"
+          }
+        }).then(function(res) {
+          var dataList = [];
+          if (res && res.data && res.data.tableValues && Array.isArray(res.data.tableValues.data)) {
+            dataList = res.data.tableValues.data;
+          }
+          var xhr = new XMLHttpRequest();
+          xhr.open("POST", "${hostOrigin}/api/v1/connector/sources/data-capture", true);
+          xhr.setRequestHeader("Content-Type", "application/json");
+          xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+              if (xhr.status === 200) {
+                alert("🎉 千牛一键捕获并提取真实账单数据成功！已上报 " + dataList.length + " 条真实记录。请返回飞书多维表格点击保存并同步！");
+              } else {
+                alert("❌ 数据上报失败: HTTP " + xhr.status);
+              }
+            }
+          };
+          xhr.send(JSON.stringify({
+            cookie: cookie,
+            shopId: shopId,
+            shopName: shopName,
+            module: "${syncModule}",
+            dataList: dataList
+          }));
+        }).catch(function(err) {
+          alert("❌ 无法提取真实账单: " + (err && err.message ? err.message : String(err)));
+        });
+        return;
+      }
+
       var serverUrl = "${hostOrigin}/api/v1/connector/sources/login-capture-get";
-      var url = serverUrl + "?cookie=" + encodeURIComponent(cookie) + "&shopId=" + encodeURIComponent(shopId || "default") + "&shopName=" + encodeURIComponent(document.title || "${selectedPlatform.name}店铺") + "&module=${syncModule}";
+      var url = serverUrl + "?cookie=" + encodeURIComponent(cookie) + "&shopId=" + encodeURIComponent(shopId || "default") + "&shopName=" + encodeURIComponent(shopName) + "&module=${syncModule}";
       window.open(url, "_blank");
     })();`;
     return code.replace(/\\r?\\n\\s*/g, '').replace(/\r?\n\s*/g, '');
-  }, [platform, syncModule]);
+  }, [platform, syncModule, shopIdParam]);
 
   return (
     <div className="connector-container">

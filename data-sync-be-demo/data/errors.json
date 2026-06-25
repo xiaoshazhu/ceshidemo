@@ -1,5 +1,285 @@
 [
   {
+    "id": "ERR_1782374911413",
+    "taskId": "TASK_17823749",
+    "timestamp": "2026/6/25 16:08:31",
+    "platform": "千牛工作台",
+    "shopName": "商户_499066699",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "千牛工作台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782374514193",
+    "taskId": "TASK_17823745",
+    "timestamp": "2026/6/25 16:01:54",
+    "platform": "千牛工作台",
+    "shopName": "商户_499066699",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "千牛工作台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782374075832",
+    "taskId": "TASK_17823740",
+    "timestamp": "2026/6/25 15:54:35",
+    "platform": "千牛工作台",
+    "shopName": "商户_499066699",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "千牛工作台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782373987359",
+    "taskId": "TASK_17823739",
+    "timestamp": "2026/6/25 15:53:07",
+    "platform": "千牛工作台",
+    "shopName": "商户_499066699",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "千牛工作台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782373922005",
+    "taskId": "TASK_17823739",
+    "timestamp": "2026/6/25 15:52:02",
+    "platform": "千牛工作台",
+    "shopName": "商户_682734",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "千牛工作台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782373907078",
+    "taskId": "TASK_17823739",
+    "timestamp": "2026/6/25 15:51:47",
+    "platform": "千牛工作台",
+    "shopName": "商户_682734",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "千牛工作台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782373890636",
+    "taskId": "TASK_17823738",
+    "timestamp": "2026/6/25 15:51:30",
+    "platform": "千牛工作台",
+    "shopName": "商户_682734",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "千牛工作台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782373234722",
+    "taskId": "TASK_17823732",
+    "timestamp": "2026/6/25 15:40:34",
+    "platform": "千牛工作台",
+    "shopName": "商户_499066699",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "千牛工作台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782373174702",
+    "taskId": "TASK_17823731",
+    "timestamp": "2026/6/25 15:39:34",
+    "platform": "千牛工作台",
+    "shopName": "商户_499066699",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "千牛工作台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782372972512",
+    "taskId": "TASK_17823729",
+    "timestamp": "2026/6/25 15:36:12",
+    "platform": "千牛工作台",
+    "shopName": "商户_499066699",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "千牛工作台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782372587238",
+    "taskId": "TASK_17823725",
+    "timestamp": "2026/6/25 15:29:47",
+    "platform": "千牛工作台",
+    "shopName": "商户_499066699",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "千牛工作台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782372504813",
+    "taskId": "TASK_17823725",
+    "timestamp": "2026/6/25 15:28:24",
+    "platform": "千牛工作台",
+    "shopName": "商户_499066699",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "千牛工作台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782372365357",
+    "taskId": "TASK_17823723",
+    "timestamp": "2026/6/25 15:26:05",
+    "platform": "千牛工作台",
+    "shopName": "商户_499066699",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "千牛工作台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782372227616",
+    "taskId": "TASK_17823722",
+    "timestamp": "2026/6/25 15:23:47",
+    "platform": "千牛工作台",
+    "shopName": "商户_682734",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "千牛工作台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782372100556",
+    "taskId": "TASK_17823720",
+    "timestamp": "2026/6/25 15:21:40",
+    "platform": "千牛工作台",
+    "shopName": "商户_499066699",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "千牛工作台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782372021393",
+    "taskId": "TASK_17823720",
+    "timestamp": "2026/6/25 15:20:21",
+    "platform": "千牛工作台",
+    "shopName": "商户_499066699",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "千牛工作台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782371991135",
+    "taskId": "TASK_17823719",
+    "timestamp": "2026/6/25 15:19:51",
+    "platform": "千牛工作台",
+    "shopName": "商户_682734",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "千牛工作台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782371175863",
+    "taskId": "TASK_17823711",
+    "timestamp": "2026/6/25 15:06:15",
+    "platform": "千牛工作台",
+    "shopName": "商户_682734",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "千牛工作台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782370957273",
+    "taskId": "TASK_17823709",
+    "timestamp": "2026/6/25 15:02:37",
+    "platform": "抖音电商罗盘",
+    "shopName": "商户_499066699",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "抖店 Session Cookie 已过期失效，请重新在连接器配置页面扫码/验证码登录捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782369517812",
+    "taskId": "TASK_17823695",
+    "timestamp": "2026/6/25 14:38:37",
+    "platform": "抖音电商罗盘",
+    "shopName": "商户_682734",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "抖店 Session Cookie 已过期失效，请重新在连接器配置页面扫码/验证码登录捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782369498886",
+    "taskId": "TASK_17823694",
+    "timestamp": "2026/6/25 14:38:18",
+    "platform": "抖音电商罗盘",
+    "shopName": "商户_682734",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "抖店 Session Cookie 已过期失效，请重新在连接器配置页面扫码/验证码登录捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782369496716",
+    "taskId": "TASK_17823694",
+    "timestamp": "2026/6/25 14:38:16",
+    "platform": "抖音电商罗盘",
+    "shopName": "商户_15422431",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "抖店 Session Cookie 已过期失效，请重新在连接器配置页面扫码/验证码登录捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782369476901",
+    "taskId": "TASK_17823694",
+    "timestamp": "2026/6/25 14:37:56",
+    "platform": "抖音电商罗盘",
+    "shopName": "商户_682734",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "抖店 Session Cookie 已过期失效，请重新在连接器配置页面扫码/验证码登录捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782369473472",
+    "taskId": "TASK_17823694",
+    "timestamp": "2026/6/25 14:37:53",
+    "platform": "抖音电商罗盘",
+    "shopName": "商户_15422431",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "抖店 Session Cookie 已过期失效，请重新在连接器配置页面扫码/验证码登录捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782366331224",
+    "taskId": "TEST_TASK",
+    "timestamp": "2026/6/25 13:45:31",
+    "platform": "抖音电商罗盘",
+    "shopName": "商户_15422431",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "抖店 Session Cookie 已过期失效，请重新在连接器配置页面扫码/验证码登录捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782365624059",
+    "taskId": "TASK_17823656",
+    "timestamp": "2026/6/25 13:33:44",
+    "platform": "抖音电商罗盘",
+    "shopName": "商户_15422431",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "抖店 Session Cookie 已过期失效，请重新在连接器配置页面扫码/验证码登录捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782365393847",
+    "taskId": "TASK_17823653",
+    "timestamp": "2026/6/25 13:29:53",
+    "platform": "抖音电商罗盘",
+    "shopName": "商户_15422431",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "抖店 Session Cookie 已过期失效，请重新在连接器配置页面扫码/验证码登录捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782365122853",
+    "taskId": "TASK_17823651",
+    "timestamp": "2026/6/25 13:25:22",
+    "platform": "抖音电商罗盘",
+    "shopName": "商户_15422431",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "抖店 Session Cookie 已过期失效，请重新在连接器配置页面扫码/验证码登录捕获！",
+    "status": "待处理"
+  },
+  {
     "id": "ERR_1782266809264",
     "taskId": "TASK_17822668",
     "timestamp": "2026/6/24 10:06:49",

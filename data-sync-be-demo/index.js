@@ -194,6 +194,40 @@ app.post("/api/v1/connector/sources/login-capture", async (req, res) => {
 });
 
 /**
+ * 功能描述：接收由浏览器一键书签直接提取的真实数据并持久化到本地 scratch JSON 缓存
+ */
+app.post("/api/v1/connector/sources/data-capture", async (req, res) => {
+  const { cookie, shopId, shopName, module, dataList } = req.body;
+  if (!cookie) {
+    return res.status(400).json({ code: 400, message: "Cookie 凭证为空" });
+  }
+
+  const payload = {
+    cookie: cookie,
+    shopId: shopId || "",
+    shopName: shopName || "千牛工作台店铺",
+    module: module || "qianniu_fund_detail"
+  };
+
+  try {
+    const { saveCapturedBuffer } = require("./database.js");
+    await saveCapturedBuffer(payload);
+    console.log("✅ [data-capture] 凭证已注入 SQLite 暂存数据库:", payload);
+
+    if (Array.isArray(dataList) && dataList.length > 0) {
+      const fs = require('fs');
+      const cachePath = '/Users/wangxun/.gemini/antigravity-ide/brain/471893df-480c-4f75-a67b-5d13cb419620/scratch/qianniu_cache.json';
+      fs.writeFileSync(cachePath, JSON.stringify(dataList, null, 2), 'utf8');
+      console.log(`✅ [data-capture] 成功将 ${dataList.length} 条真实数据写入本地缓存文件: ${cachePath}`);
+    }
+
+    res.status(200).json({ code: 0, message: "数据及凭据接收成功！" });
+  } catch (e) {
+    res.status(500).json({ code: 500, message: `保存失败: ${e.message}` });
+  }
+});
+
+/**
  * 功能描述：接收由浏览器一键书签 GET 方式回传的凭据（绕过严格的 CSP 跨域策略拦截）
  * @param {object} req - Express 请求
  * @param {object} res - Express 响应
