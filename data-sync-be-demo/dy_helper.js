@@ -231,6 +231,10 @@ async function fetchRealDoudianData(cookie, shopId, syncModule, configOrDateRang
     requestUrl = `https://acs.m.taobao.com/h5/mtop.taobao.finance.fund.bill.query/1.0/?jsv=2.6.1&appKey=${appKey}&t=${tVal}&sign=${sign}&api=mtop.taobao.finance.fund.bill.query&v=1.0&ttid=11320%40taobao_WEB_9.9.99&dataType=originaljsonp&type=originaljsonp&data=${encodeURIComponent(mtopData)}`;
     headers['Referer'] = 'https://myseller.taobao.com/';
     requestMethod = 'GET';
+  } else if (syncModule === 'jingmai_finance') {
+    requestUrl = `https://ims.jdpay.com/capital/completeData.do?accountId=${shopId || '110266763006'}&dateType=1&startDate=${startDateStr}%2000:00:00&endDate=${endDateStr}%2023:59:59&page=${pageNum}&pageSize=50`;
+    headers['Referer'] = 'https://ims.jdpay.com/';
+    requestMethod = 'GET';
   } else {
     // 默认：订单发货 -> 订单管理 (order_report 等)
     requestUrl = `https://fxg.jinritemai.com/ffa/g/order/searchList`;
@@ -255,6 +259,11 @@ async function fetchRealDoudianData(cookie, shopId, syncModule, configOrDateRang
 
     // 千牛平台专属特征前置校验：必须包含淘宝核心 Cookie 特征（_tb_token_ 或 cookie2）
     if (syncModule === 'qianniu_fund_detail' && !cookie.includes('_tb_token_') && !cookie.includes('cookie2')) {
+      throw new Error("CredentialsExpired: 凭证失效(Cookie过期)");
+    }
+
+    // 京麦平台专属特征前置校验：必须包含京东金融核心 Cookie 特征（light_key 或 pin）
+    if (syncModule.startsWith('jingmai_') && !cookie.includes('light_key') && !cookie.includes('pin')) {
       throw new Error("CredentialsExpired: 凭证失效(Cookie过期)");
     }
 
@@ -353,42 +362,9 @@ async function fetchRealDoudianData(cookie, shopId, syncModule, configOrDateRang
         return realData;
       }
 
-      // 柔性降级：若 Cookie 有效但接口签名不配导致没拉到数据，注入 19 条高保真的真实千牛明细进行同步联调
-      console.log(`[Mode B] 淘宝真实接口签名限制，启用千牛高仿真测试数据注入...`);
-      const realData = [];
-      const billTypes = ["淘宝订单收入", "售后退款支出", "店铺服务费扣减", "保证金增充", "直通车推广推广费"];
-      const bizDescs = [
-        "淘宝消费者购买商品订单支付成功",
-        "消费者申请售后退款，款项退回",
-        "扣除本月店铺软件技术服务年费",
-        "店铺保证金账户充值增补",
-        "千牛直通车推广流量消耗扣费"
-      ];
-      const mockCount = 19;
-      let startTimeMs = Date.now() - 15 * 24 * 3600000;
-      let endTimeMs = Date.now();
-      const interval = (endTimeMs - startTimeMs) / (mockCount + 1);
-      for (let i = 0; i < mockCount; i++) {
-        const flowTime = startTimeMs + i * interval + Math.random() * (interval * 0.5);
-        const flowId = `TX_${String(Math.floor(flowTime)).substring(4, 13)}${String(i).padStart(3, '0')}`;
-        const typeIdx = i % billTypes.length;
-        const isIncome = typeIdx === 0 || typeIdx === 3;
-        const amount = Number((Math.random() * 900 + 100).toFixed(2));
-        
-        realData.push({
-          id: flowId,
-          flow_id: flowId,
-          record_time: Math.floor(flowTime),
-          order_id: typeIdx === 0 || typeIdx === 1 ? `482930291048${String(i).padStart(4, '0')}` : "",
-          bill_type: billTypes[typeIdx],
-          income: isIncome ? amount : 0,
-          outcome: isIncome ? 0 : amount,
-          biz_desc: bizDescs[typeIdx],
-          remark: typeIdx === 0 ? "财务入账" : typeIdx === 1 ? "退款扣除" : "系统动账"
-        });
-      }
-      realData.total = realData.length;
-      return realData;
+      // 如果没有拉取到数据，返回空数组，以便调用方可以尝试从本地捕获的真实缓存文件中读取
+      console.log(`[Mode B] 淘宝真实接口未返回有效数据，返回空数组以尝试本地缓存...`);
+      return [];
     }
 
     const contentType = response.headers.get('content-type') || '';
@@ -417,21 +393,29 @@ async function fetchRealDoudianData(cookie, shopId, syncModule, configOrDateRang
     }
 
     // 抖音/小红书有些接口会在 data 下返回 list/note_list，或者直接在根节点，或者 data 本身直接就是数组
+    // 京麦 completeData.do 接口数据在 resJson.data.ssbinfos 下，聚水潭在 resJson.data.data 下
     let list = [];
-    if (Array.isArray(resJson.list)) {
+    if (Array.isArray(resJson)) {
+      list = resJson;
+    } else if (Array.isArray(resJson.list)) {
       list = resJson.list;
     } else if (Array.isArray(resJson.items)) {
       list = resJson.items;
+    } else if (Array.isArray(resJson.rows)) {
+      list = resJson.rows;
     } else if (resJson.data) {
       if (Array.isArray(resJson.data)) {
         list = resJson.data;
       } else {
-        list = resJson.data.list || resJson.data.data_list || resJson.data.items || resJson.data.flows || resJson.data.flow_list || resJson.data.note_list || [];
+        list = resJson.data.ssbinfos || resJson.data.data || resJson.data.list || resJson.data.data_list || resJson.data.items || resJson.data.flows || resJson.data.flow_list || resJson.data.note_list || [];
       }
     }
     
     const resultList = Array.isArray(list) ? list : [];
-    const totalVal = resJson.total !== undefined ? resJson.total : (resJson.data && resJson.data.total !== undefined ? resJson.data.total : resultList.length);
+    const totalVal = resJson.total !== undefined ? resJson.total 
+                    : (resJson.data && resJson.data.total !== undefined ? resJson.data.total 
+                    : (resJson.data && resJson.data.count !== undefined ? resJson.data.count 
+                    : resultList.length));
     resultList.total = Number(totalVal || 0);
 
     return resultList;
@@ -441,7 +425,8 @@ async function fetchRealDoudianData(cookie, shopId, syncModule, configOrDateRang
     const isQianniu = syncModule.startsWith('qianniu_');
     const isXhs = syncModule.startsWith('xiaohongshu_');
     const isJst = syncModule.startsWith('jushuitan_');
-    const platformName = isQianniu ? '千牛工作台' : isXhs ? '小红书平台' : isJst ? '聚水潭ERP' : '抖音电商罗盘';
+    const isJingmai = syncModule.startsWith('jingmai_');
+    const platformName = isQianniu ? '千牛工作台' : isXhs ? '小红书平台' : isJst ? '聚水潭ERP' : isJingmai ? '京麦平台' : '抖音电商罗盘';
 
     if (msg.includes("CredentialsExpired") || msg.includes("Cookie") || msg.includes("401") || msg.includes("403")) {
       errorType = '凭证失效(Cookie过期)';

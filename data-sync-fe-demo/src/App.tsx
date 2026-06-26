@@ -123,10 +123,12 @@ const MODULE_FIELDS: Record<string, { key: string; label: string; type: string; 
     { key: 'order_status', label: '订单状态 (order_status)', type: 'Text', defaultField: 'col_order_status' }
   ],
   jingmai_finance: [
-    { key: 'flow_id', label: '流水号 (flow_id)', type: 'Text', defaultField: 'col_flow_id' },
-    { key: 'trade_amount', label: '收支金额 (trade_amount)', type: 'Number', defaultField: 'col_trade_amount' },
-    { key: 'check_time', label: '动账时间 (check_time)', type: 'DateTime', defaultField: 'col_check_time' },
-    { key: 'remark', label: '备注 (remark)', type: 'Text', defaultField: 'col_remark' }
+    { key: 'id', label: '主键ID (id)', type: 'Text', defaultField: 'col_id' },
+    { key: 'arrival_date', label: '收款到账日期 (arrival_date)', type: 'DateTime', defaultField: 'col_arrival_date' },
+    { key: 'billing_date', label: '账单日期 (billing_date)', type: 'DateTime', defaultField: 'col_billing_date' },
+    { key: 'income', label: '收入 (income)', type: 'Number', defaultField: 'col_income' },
+    { key: 'expenditure', label: '支出 (expenditure)', type: 'Number', defaultField: 'col_expenditure' },
+    { key: 'actual_settlement', label: '实际结算 (actual_settlement)', type: 'Number', defaultField: 'col_actual_settlement' }
   ],
   jushuitan_order: [
     { key: 'io_id', label: '出入库单号 (io_id)', type: 'Text', defaultField: 'col_io_id' },
@@ -228,7 +230,7 @@ const PLATFORMS_MAP: PlatformConfig[] = [
   { key: 'douyin', name: '抖音电商', desc: '包含抖店、电商罗盘模块', icon: '🎵', url: 'https://fxg.jinritemai.com/login/common?extra=%7B%22target_url%22%3A%22https%3A%2F%2Ffxg.jinritemai.com%2Fffa%2Fmshop%2Fhomepage%2Findex%22%7D' },
   { key: 'alimama', name: '阿里妈妈', desc: '包含淘宝联盟、万相台投放模块', icon: '🌸', url: 'https://login.taobao.com/member/login.jhtml?redirectURL=https%3A%2F%2Fwww.alimama.com' },
   { key: 'compass', name: '电商罗盘', desc: '包含抖音电商罗盘核心数据', icon: '🧭', url: 'https://compass.jinritemai.com/' },
-  { key: 'jingmai', name: '京麦 (金麦)', desc: '京东商家开放平台与后台数据', icon: '📦', url: 'https://passport.shop.jd.com/' },
+  { key: 'jingmai', name: '京麦 (金麦)', desc: '京东资金与账单数据同步', icon: '📦', url: 'https://ims.jdpay.com/layout/frame.do?callBackUrl=/fundapp/accountquery/toAccountBalance.do?accNo=110266763006' },
   { key: 'qianchuan', name: '巨量千川', desc: '巨量千川广告投放与素材分析', icon: '🌊', url: 'https://qianchuan.jinritemai.com/' },
   { key: 'jushuitan', name: '聚水潭 ERP', desc: '订单、出入库与商品库存数据', icon: '💧', url: 'https://www.erp321.com/' },
   { key: 'qianniu', name: '千牛工作台', desc: '微信/支付宝聚合账单与店铺管理', icon: '🐂', url: 'https://qn.taobao.com/' },
@@ -388,10 +390,13 @@ const getDynamicLoginUrl = (pKey: string, mKey: string): string => {
     if (mKey === 'qianniu_fund_detail') return 'https://myseller.taobao.com/home.htm/whale-accountant/pay/capital/home?active=fund_detail';
     return 'https://myseller.taobao.com/';
   }
+  if (pKey === 'jingmai') {
+    return 'https://ims.jdpay.com/layout/frame.do?callBackUrl=/fundapp/accountquery/toAccountBalance.do?accNo=110266763006';
+  }
   const defaultUrls: Record<string, string> = {
     douyin: 'https://fxg.jinritemai.com/login/common?extra=%7B%22target_url%22%3A%22https%3A%2F%2Ffxg.jinritemai.com%2Fffa%2Fmshop%2Fhomepage%2Findex%22%7D',
     compass: 'https://compass.jinritemai.com/',
-    jingmai: 'https://passport.shop.jd.com/',
+    jingmai: 'https://ims.jdpay.com/layout/frame.do?callBackUrl=/fundapp/accountquery/toAccountBalance.do?accNo=110266763006',
     qianchuan: 'https://qianchuan.jinritemai.com/',
     jushuitan: 'https://www.erp321.com/',
     qianniu: 'https://qn.taobao.com/'
@@ -529,7 +534,7 @@ export default function App(): JSX.Element {
       qianchuan: 'qianchuan_material',
       compass: 'compass_trade',
       alimama: 'alimama_union',
-      jingmai: 'jingmai_order',
+      jingmai: 'jingmai_finance',
       jushuitan: 'jushuitan_order',
       qianniu: 'qianniu_bill_wechat',
       xiaohongshu: 'xiaohongshu_pugongying'
@@ -537,7 +542,7 @@ export default function App(): JSX.Element {
     const defaultMod = defaultModules[platform] || validModules[0] || 'order_report';
 
     if (activeAcc) {
-      setShopIdParam(activeAcc.shopId || (platform === 'qianniu' ? '499066699' : ''));
+      setShopIdParam(activeAcc.shopId || (platform === 'qianniu' ? '499066699' : platform === 'jingmai' ? '110266763006' : ''));
       if (activeAcc.module && validModules.includes(activeAcc.module)) {
         setSyncModule(activeAcc.module);
       } else {
@@ -546,6 +551,8 @@ export default function App(): JSX.Element {
     } else {
       if (platform === 'qianniu') {
         setShopIdParam('499066699');
+      } else if (platform === 'jingmai') {
+        setShopIdParam('110266763006');
       } else {
         setShopIdParam('');
       }
@@ -1014,6 +1021,9 @@ export default function App(): JSX.Element {
       if (!shopId && '${platform}' === 'qianniu') {
         shopId = '499066699';
       }
+      if (!shopId && '${platform}' === 'jingmai') {
+        shopId = '110266763006';
+      }
       if (!shopId) {
         var match = cookie.match(/(?:owner_co_id|authorize_co_id|co_id|shop_id|shop_id_str|member_id|seller_id|userId|customer_id)=(\\d+)/);
         if (match) {
@@ -1030,6 +1040,9 @@ export default function App(): JSX.Element {
       var shopName = document.title || "${selectedPlatform.name}店铺";
       if ('${platform}' === 'qianniu') {
         shopName = '高原安旗舰店:财务';
+      }
+      if ('${platform}' === 'jingmai') {
+        shopName = '京东商户结算中心';
       }
 
       if ('${platform}' === 'qianniu' && window.lib && window.lib.mtop) {
@@ -1070,6 +1083,60 @@ export default function App(): JSX.Element {
             dataList: dataList
           }));
         }).catch(function(err) {
+          alert("❌ 无法提取真实账单: " + (err && err.message ? err.message : String(err)));
+        });
+        return;
+      }
+
+      if ('${platform}' === 'jingmai') {
+        var cycleFrom = new Date(Date.now() - 30 * 24 * 3600000).toISOString().split('T')[0] + ' 00:00:00';
+        var cycleTo = new Date().toISOString().split('T')[0] + ' 23:59:59';
+        var jdUrl = "/capital/completeData.do?accountId=" + shopId + "&dateType=1&startDate=" + encodeURIComponent(cycleFrom) + "&endDate=" + encodeURIComponent(cycleTo) + "&page=1&pageSize=50";
+        fetch(jdUrl)
+        .then(function(res) {
+          if (!res.ok) {
+            throw new Error("HTTP " + res.status);
+          }
+          return res.json();
+        })
+        .then(function(resJson) {
+          var dataList = [];
+          if (resJson && resJson.data && Array.isArray(resJson.data.ssbinfos)) {
+            dataList = resJson.data.ssbinfos;
+          } else if (resJson && resJson.data && Array.isArray(resJson.data.data)) {
+            dataList = resJson.data.data;
+          } else if (Array.isArray(resJson)) {
+            dataList = resJson;
+          } else if (resJson && Array.isArray(resJson.list)) {
+            dataList = resJson.list;
+          } else if (resJson && resJson.data && Array.isArray(resJson.data.list)) {
+            dataList = resJson.data.list;
+          } else if (resJson && resJson.data && Array.isArray(resJson.data)) {
+            dataList = resJson.data;
+          } else if (resJson && Array.isArray(resJson.rows)) {
+            dataList = resJson.rows;
+          }
+          var xhr = new XMLHttpRequest();
+          xhr.open("POST", "${hostOrigin}/api/v1/connector/sources/data-capture", true);
+          xhr.setRequestHeader("Content-Type", "application/json");
+          xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+              if (xhr.status === 200) {
+                alert("🎉 京麦一键捕获并提取真实账单数据成功！已上报 " + dataList.length + " 条真实记录。请返回飞书多维表格点击保存并同步！");
+              } else {
+                alert("❌ 数据上报失败: HTTP " + xhr.status);
+              }
+            }
+          };
+          xhr.send(JSON.stringify({
+            cookie: cookie,
+            shopId: shopId,
+            shopName: shopName,
+            module: "${syncModule}",
+            dataList: dataList
+          }));
+        })
+        .catch(function(err) {
           alert("❌ 无法提取真实账单: " + (err && err.message ? err.message : String(err)));
         });
         return;

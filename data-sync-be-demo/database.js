@@ -315,5 +315,6 @@ module.exports = {
   clearCapturedBuffer,
   saveTask,
   updateAccountModule,
-  saveError
+  saveError,
+  detectPlatformByModule
 };

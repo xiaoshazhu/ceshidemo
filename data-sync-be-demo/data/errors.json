@@ -1,5 +1,415 @@
 [
   {
+    "id": "ERR_1782441107497",
+    "taskId": "TASK_17824411",
+    "timestamp": "2026/6/26 10:31:47",
+    "platform": "京麦平台",
+    "shopName": "商户_110266763006",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "京麦平台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782441096846",
+    "taskId": "TASK_17824410",
+    "timestamp": "2026/6/26 10:31:36",
+    "platform": "京麦平台",
+    "shopName": "商户_110266763006",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "京麦平台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782441029418",
+    "taskId": "TASK_17824410",
+    "timestamp": "2026/6/26 10:30:29",
+    "platform": "京麦平台",
+    "shopName": "商户_110266763006",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "京麦平台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782440960819",
+    "taskId": "TASK_17824409",
+    "timestamp": "2026/6/26 10:29:20",
+    "platform": "京麦平台",
+    "shopName": "商户_110266763006",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "京麦平台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782440339255",
+    "taskId": "TASK_17824403",
+    "timestamp": "2026/6/26 10:18:59",
+    "platform": "京麦平台",
+    "shopName": "商户_110266763006",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "京麦平台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782440323581",
+    "taskId": "TASK_17824403",
+    "timestamp": "2026/6/26 10:18:43",
+    "platform": "京麦平台",
+    "shopName": "商户_110266763006",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "京麦平台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782411942485",
+    "taskId": "TASK_17824119",
+    "timestamp": "2026/6/26 02:25:42",
+    "platform": "聚水潭ERP",
+    "shopName": "商户_15422431",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "聚水潭ERP 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782411347929",
+    "taskId": "TASK_17824113",
+    "timestamp": "2026/6/26 02:15:47",
+    "platform": "京麦平台",
+    "shopName": "商户_110266763006",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "京麦平台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782410979643",
+    "taskId": "TASK_17824109",
+    "timestamp": "2026/6/26 02:09:39",
+    "platform": "千牛工作台",
+    "shopName": "商户_499066699",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "千牛工作台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782409422442",
+    "taskId": "TASK_17824094",
+    "timestamp": "2026/6/26 01:43:42",
+    "platform": "聚水潭ERP",
+    "shopName": "商户_15422431",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "聚水潭ERP 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782408340524",
+    "taskId": "TASK_17824083",
+    "timestamp": "2026/6/26 01:25:40",
+    "platform": "聚水潭ERP",
+    "shopName": "商户_15422431",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "聚水潭ERP 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782407748695",
+    "taskId": "TASK_17824077",
+    "timestamp": "2026/6/26 01:15:48",
+    "platform": "京麦平台",
+    "shopName": "商户_110266763006",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "京麦平台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782407377826",
+    "taskId": "TASK_17824073",
+    "timestamp": "2026/6/26 01:09:37",
+    "platform": "千牛工作台",
+    "shopName": "商户_499066699",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "千牛工作台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782405819360",
+    "taskId": "TASK_17824058",
+    "timestamp": "2026/6/26 00:43:39",
+    "platform": "聚水潭ERP",
+    "shopName": "商户_15422431",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "聚水潭ERP 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782404743708",
+    "taskId": "TASK_17824047",
+    "timestamp": "2026/6/26 00:25:43",
+    "platform": "聚水潭ERP",
+    "shopName": "商户_15422431",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "聚水潭ERP 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782404155935",
+    "taskId": "TASK_17824041",
+    "timestamp": "2026/6/26 00:15:55",
+    "platform": "京麦平台",
+    "shopName": "商户_110266763006",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "京麦平台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782403779743",
+    "taskId": "TASK_17824037",
+    "timestamp": "2026/6/26 00:09:39",
+    "platform": "千牛工作台",
+    "shopName": "商户_499066699",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "千牛工作台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782402221536",
+    "taskId": "TASK_17824022",
+    "timestamp": "2026/6/25 23:43:41",
+    "platform": "聚水潭ERP",
+    "shopName": "商户_15422431",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "聚水潭ERP 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782401143489",
+    "taskId": "TASK_17824011",
+    "timestamp": "2026/6/25 23:25:43",
+    "platform": "聚水潭ERP",
+    "shopName": "商户_15422431",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "聚水潭ERP 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782400549842",
+    "taskId": "TASK_17824005",
+    "timestamp": "2026/6/25 23:15:49",
+    "platform": "京麦平台",
+    "shopName": "商户_110266763006",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "京麦平台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782400180687",
+    "taskId": "TASK_17824001",
+    "timestamp": "2026/6/25 23:09:40",
+    "platform": "千牛工作台",
+    "shopName": "商户_499066699",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "千牛工作台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782398624358",
+    "taskId": "TASK_17823986",
+    "timestamp": "2026/6/25 22:43:44",
+    "platform": "聚水潭ERP",
+    "shopName": "商户_15422431",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "聚水潭ERP 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782397546516",
+    "taskId": "TASK_17823975",
+    "timestamp": "2026/6/25 22:25:46",
+    "platform": "聚水潭ERP",
+    "shopName": "商户_15422431",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "聚水潭ERP 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782396947649",
+    "taskId": "TASK_17823969",
+    "timestamp": "2026/6/25 22:15:47",
+    "platform": "京麦平台",
+    "shopName": "商户_110266763006",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "京麦平台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782396581990",
+    "taskId": "TASK_17823965",
+    "timestamp": "2026/6/25 22:09:41",
+    "platform": "千牛工作台",
+    "shopName": "商户_499066699",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "千牛工作台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782395097010",
+    "taskId": "TASK_17823950",
+    "timestamp": "2026/6/25 21:44:57",
+    "platform": "聚水潭ERP",
+    "shopName": "商户_15422431",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "聚水潭ERP 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782393945232",
+    "taskId": "TASK_17823939",
+    "timestamp": "2026/6/25 21:25:45",
+    "platform": "聚水潭ERP",
+    "shopName": "商户_15422431",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "聚水潭ERP 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782393348946",
+    "taskId": "TASK_17823933",
+    "timestamp": "2026/6/25 21:15:48",
+    "platform": "京麦平台",
+    "shopName": "商户_110266763006",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "京麦平台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782392981945",
+    "taskId": "TASK_17823929",
+    "timestamp": "2026/6/25 21:09:41",
+    "platform": "千牛工作台",
+    "shopName": "商户_499066699",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "千牛工作台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782390348508",
+    "taskId": "TASK_17823903",
+    "timestamp": "2026/6/25 20:25:48",
+    "platform": "聚水潭ERP",
+    "shopName": "商户_15422431",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "聚水潭ERP 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782389749607",
+    "taskId": "TASK_17823897",
+    "timestamp": "2026/6/25 20:15:49",
+    "platform": "京麦平台",
+    "shopName": "商户_110266763006",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "京麦平台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782389380332",
+    "taskId": "TASK_17823893",
+    "timestamp": "2026/6/25 20:09:40",
+    "platform": "千牛工作台",
+    "shopName": "商户_499066699",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "千牛工作台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782387826844",
+    "taskId": "TASK_17823878",
+    "timestamp": "2026/6/25 19:43:46",
+    "platform": "聚水潭ERP",
+    "shopName": "商户_15422431",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "聚水潭ERP 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782386745192",
+    "taskId": "TASK_17823867",
+    "timestamp": "2026/6/25 19:25:45",
+    "platform": "聚水潭ERP",
+    "shopName": "商户_15422431",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "聚水潭ERP 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782386179323",
+    "taskId": "TASK_17823861",
+    "timestamp": "2026/6/25 19:16:19",
+    "platform": "京麦平台",
+    "shopName": "商户_110266763006",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "京麦平台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782385784339",
+    "taskId": "TASK_17823857",
+    "timestamp": "2026/6/25 19:09:44",
+    "platform": "千牛工作台",
+    "shopName": "商户_499066699",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "千牛工作台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782384226187",
+    "taskId": "TASK_17823842",
+    "timestamp": "2026/6/25 18:43:46",
+    "platform": "聚水潭ERP",
+    "shopName": "商户_15422431",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "聚水潭ERP 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782383148201",
+    "taskId": "TASK_17823831",
+    "timestamp": "2026/6/25 18:25:48",
+    "platform": "聚水潭ERP",
+    "shopName": "商户_15422431",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "聚水潭ERP 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782382564628",
+    "taskId": "TASK_17823825",
+    "timestamp": "2026/6/25 18:16:04",
+    "platform": "京麦平台",
+    "shopName": "商户_110266763006",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "京麦平台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782382520846",
+    "taskId": "TASK_17823825",
+    "timestamp": "2026/6/25 18:15:20",
+    "platform": "千牛工作台",
+    "shopName": "商户_499066699",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "千牛工作台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
+    "id": "ERR_1782378210624",
+    "taskId": "TASK_17823782",
+    "timestamp": "2026/6/25 17:03:30",
+    "platform": "京麦平台",
+    "shopName": "商户_110266763006",
+    "errorType": "凭证失效(Cookie过期)",
+    "errorMessage": "京麦平台 登录 Session 凭证已过期失效，请重新在连接器配置页面完成登录上报捕获！",
+    "status": "待处理"
+  },
+  {
     "id": "ERR_1782374911413",
     "taskId": "TASK_17823749",
     "timestamp": "2026/6/25 16:08:31",

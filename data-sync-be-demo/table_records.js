@@ -42,15 +42,25 @@ const getTableRecords = async (reqBody) => {
   const dateRangeDays = Number(config.dateRange || "30");
   let cookie = config.accountInfo?.cookie || "";
 
-  // 智能防空激活与无感自动授权：当同步模块为聚水潭商品库存或千牛收支明细，且连接配置中缺少真实凭证时，自动从 SQLite 中读取刚刚拦截成功的真实凭据。
-  if ((syncModule === 'jushuitan_inventory' || syncModule === 'qianniu_fund_detail') && (!cookie || cookie.startsWith('mock_'))) {
+  // 智能防空激活与无感自动授权：当连接配置中缺少真实凭证时，自动从 SQLite 中读取本平台刚刚拦截成功的真实凭据。
+  if (!cookie || cookie.startsWith('mock_')) {
     try {
-      const { getAccounts, getCapturedBuffer } = require('./database.js');
-      const platformKey = syncModule === 'jushuitan_inventory' ? 'jushuitan' : 'qianniu';
-      const platformName = syncModule === 'jushuitan_inventory' ? '聚水潭' : '千牛工作台';
-      // 优先从临时捕获缓冲中读取
+      const { getAccounts, getCapturedBuffer, detectPlatformByModule } = require('./database.js');
+      const platformKey = detectPlatformByModule(syncModule);
+      const platformNames = {
+        'jushuitan': '聚水潭',
+        'qianniu': '千牛工作台',
+        'jingmai': '京麦平台',
+        'xiaohongshu': '小红书平台',
+        'alimama': '阿里妈妈/淘宝联盟',
+        'qianchuan': '巨量千川',
+        'douyin': '抖音电商罗盘'
+      };
+      const platformName = platformNames[platformKey] || '抖音电商罗盘';
+      
+      // 优先从临时捕获缓冲中读取（需要属于同一平台）
       const buffer = await getCapturedBuffer();
-      if (buffer && buffer.cookie && !buffer.cookie.startsWith('mock_')) {
+      if (buffer && buffer.cookie && !buffer.cookie.startsWith('mock_') && detectPlatformByModule(buffer.module) === platformKey) {
         console.log(`[智能防空] 成功从 captured_buffer 中提取并自动装配真实的${platformName} Cookie！`);
         cookie = buffer.cookie;
         config.shopIdParam = buffer.shopId || config.shopIdParam;
@@ -91,38 +101,45 @@ const getTableRecords = async (reqBody) => {
     
     let rawList = [];
     let isFromCache = false;
+    let fetchError = null;
 
-    if (syncModule === 'jushuitan_inventory') {
-      const cacheFile = '/Users/wangxun/.gemini/antigravity-ide/brain/471893df-480c-4f75-a67b-5d13cb419620/scratch/jushuitan_cache.json';
-      const fs = require('fs');
-      if (fs.existsSync(cacheFile)) {
-        try {
-          rawList = JSON.parse(fs.readFileSync(cacheFile, 'utf8'));
-          isFromCache = true;
-          console.log(`[智能防空] 成功从本地 scratch 缓存中加载 100% 真实聚水潭库存数据 (${rawList.length} 条)`);
-        } catch (err) {
-          console.warn(`[智能防空] 加载本地真实缓存数据失败: ${err.message}`);
-        }
-      }
-    } else if (syncModule === 'qianniu_fund_detail') {
-      const cacheFile = '/Users/wangxun/.gemini/antigravity-ide/brain/471893df-480c-4f75-a67b-5d13cb419620/scratch/qianniu_cache.json';
-      const fs = require('fs');
-      if (fs.existsSync(cacheFile)) {
-        try {
-          rawList = JSON.parse(fs.readFileSync(cacheFile, 'utf8'));
-          isFromCache = true;
-          console.log(`[智能防空] 成功从本地 scratch 缓存中加载 100% 真实千牛收支数据 (${rawList.length} 条)`);
-        } catch (err) {
-          console.warn(`[智能防空] 加载本地真实缓存数据失败: ${err.message}`);
+    // 1. 优先调用真实网络接口拉取最新数据
+    try {
+      rawList = await fetchRealDoudianData(cookie, shopId, syncModule, config, null, taskId, pageNum);
+      console.log(`[Mode B] 从真实接口成功拉取实时数据 (${rawList.length} 条)！模块: ${syncModule}`);
+    } catch (err) {
+      console.warn(`[Mode B] 从真实接口拉取实时数据发生异常: ${err.message}，将降级尝试加载本地缓存...`);
+      fetchError = err;
+    }
+
+    // 2. 如果拉取失败或数据为空，尝试加载一键捕获上报的本地真实缓存备份
+    if (!rawList || rawList.length === 0) {
+      let cacheFileName = '';
+      if (syncModule === 'jushuitan_inventory') cacheFileName = 'jushuitan_cache.json';
+      else if (syncModule === 'qianniu_fund_detail') cacheFileName = 'qianniu_cache.json';
+      else if (syncModule === 'jingmai_finance') cacheFileName = 'jingmai_cache.json';
+
+      if (cacheFileName) {
+        const cacheFile = `/Users/wangxun/.gemini/antigravity-ide/brain/471893df-480c-4f75-a67b-5d13cb419620/scratch/${cacheFileName}`;
+        const fs = require('fs');
+        if (fs.existsSync(cacheFile)) {
+          try {
+            rawList = JSON.parse(fs.readFileSync(cacheFile, 'utf8'));
+            isFromCache = true;
+            console.log(`[智能防空] 成功从本地 scratch 缓存中加载 100% 真实捕获数据 (${rawList.length} 条)！模块: ${syncModule}`);
+          } catch (err2) {
+            console.warn(`[智能防空] 加载本地真实缓存数据失败: ${err2.message}`);
+          }
         }
       }
     }
 
+    // 3. 如果二者皆不可用且拉取时发生了凭证失效等错误，向外抛出以阻止同步
+    if ((!rawList || rawList.length === 0) && fetchError) {
+      throw fetchError;
+    }
+
     try {
-      // 真实连接分支：直接发起请求，且不捕获/不降级，出错时让异常直接抛出
-      if (!isFromCache) {
-        rawList = await fetchRealDoudianData(cookie, shopId, syncModule, config, null, taskId, pageNum);
-      }
       
       // 转换真实数据列表为飞书 records 格式
       const realRecords = rawList.map((item, index) => {
@@ -309,6 +326,53 @@ const getTableRecords = async (reqBody) => {
           dataObj[mappings.biz_desc || 'col_biz_desc'] = item.biz_desc || item.stlBillInfo || item.description || "";
           dataObj[mappings.remark || 'col_remark'] = item.remark || item.memo || "";
 
+        } else if (syncModule === 'jingmai_finance') {
+          // 京麦资金明细转换
+          // 真实接口 completeData.do 返回字段：accDate(到账日期, 格式 YYYYMMDD)、setDate(账单日期, 格式 YYYYMMDD)、debitAmt(收入)、creditAmt(支出)
+          // 缓存数据可能使用 col_arrival_date / col_billing_date 等带前缀的字段名
+          const rawArrival = item.accDate || item.col_arrival_date || item.arrivalDate || item.arrival_date || item.completeDate || item.complete_date || item.time || '';
+          const rawBilling = item.setDate || item.col_billing_date || item.billingDate || item.billing_date || item.tradeDate || item.trade_date || item.time || '';
+
+          /**
+           * 功能描述：将 YYYYMMDD 格式的日期字符串或 ISO 日期字符串安全解析为毫秒时间戳
+           * @param {string|number} val - 日期原始值
+           * @return {number} 毫秒级时间戳
+           */
+          const parseDate = (val) => {
+            if (!val) return Date.now();
+            if (typeof val === 'number') return val;
+            const s = String(val).trim();
+            // 处理 YYYYMMDD 格式 (如 20260625)
+            if (/^\d{8}$/.test(s)) {
+              const y = s.substring(0, 4);
+              const m = s.substring(4, 6);
+              const d = s.substring(6, 8);
+              const parsed = Date.parse(`${y}/${m}/${d} 00:00:00`);
+              return isNaN(parsed) ? Date.now() : parsed;
+            }
+            // 其他标准日期格式
+            const parsed = Date.parse(s.replace(/-/g, '/'));
+            return isNaN(parsed) ? Date.now() : parsed;
+          };
+
+          const arrivalTime = parseDate(rawArrival);
+          const billingTime = parseDate(rawBilling);
+
+          // 真实接口中 debitAmt 为收入（借方），creditAmt 为支出（贷方）
+          const income = Number(item.debitAmt !== undefined ? item.debitAmt : (item.col_income !== undefined ? item.col_income : (item.income !== undefined ? item.income : 0)));
+          const expenditure = Number(item.creditAmt !== undefined ? item.creditAmt : (item.col_expenditure !== undefined ? item.col_expenditure : (item.expenditure !== undefined ? item.expenditure : 0)));
+          const actualSettlement = Number(item.col_actual_settlement !== undefined ? item.col_actual_settlement : (item.actual_settlement !== undefined ? item.actual_settlement : (item.actualSettlement !== undefined ? item.actualSettlement : (income - expenditure))));
+
+          // 唯一主键：使用到账日期+账单日期+金额生成
+          primaryId = String(item.col_id || item.id || item.flow_id || item.flowId || `JM_${rawArrival || arrivalTime}_${rawBilling || billingTime}_${index}`);
+
+          dataObj[mappings.id || 'col_id'] = primaryId;
+          dataObj[mappings.arrival_date || 'col_arrival_date'] = arrivalTime;
+          dataObj[mappings.billing_date || 'col_billing_date'] = billingTime;
+          dataObj[mappings.income || 'col_income'] = income;
+          dataObj[mappings.expenditure || 'col_expenditure'] = expenditure;
+          dataObj[mappings.actual_settlement || 'col_actual_settlement'] = actualSettlement;
+
         } else {
           // 默认订单管理等
           const orderId = item.order_id || item.orderId || `ORDER_${index}`;
@@ -328,7 +392,7 @@ const getTableRecords = async (reqBody) => {
         }
 
         return {
-          primaryId: primaryId,
+          primaryId: String(primaryId),
           data: dataObj
         };
       });

@@ -628,23 +628,14 @@ const getTableMeta = (module) => {
         tableName: "京麦平台-京东资金明细表",
         fields: [
           {
-            fieldId: "col_flow_id",
-            fieldName: "流水号",
+            fieldId: "col_id",
+            fieldName: "主键ID",
             fieldType: 1, // Text
             isPrimary: true
           },
           {
-            fieldId: "col_trade_amount",
-            fieldName: "收支金额",
-            fieldType: 2, // Number
-            isPrimary: false,
-            property: {
-              formatter: "#,##0.00"
-            }
-          },
-          {
-            fieldId: "col_check_time",
-            fieldName: "动账时间",
+            fieldId: "col_arrival_date",
+            fieldName: "收款到账日期",
             fieldType: 5, // DateTime
             isPrimary: false,
             property: {
@@ -652,10 +643,40 @@ const getTableMeta = (module) => {
             }
           },
           {
-            fieldId: "col_remark",
-            fieldName: "备注",
-            fieldType: 1, // Text
-            isPrimary: false
+            fieldId: "col_billing_date",
+            fieldName: "账单日期",
+            fieldType: 5, // DateTime
+            isPrimary: false,
+            property: {
+              formatter: "yyyy-MM-dd HH:mm"
+            }
+          },
+          {
+            fieldId: "col_income",
+            fieldName: "收入",
+            fieldType: 2, // Number
+            isPrimary: false,
+            property: {
+              formatter: "#,##0.00"
+            }
+          },
+          {
+            fieldId: "col_expenditure",
+            fieldName: "支出",
+            fieldType: 2, // Number
+            isPrimary: false,
+            property: {
+              formatter: "#,##0.00"
+            }
+          },
+          {
+            fieldId: "col_actual_settlement",
+            fieldName: "实际结算",
+            fieldType: 2, // Number
+            isPrimary: false,
+            property: {
+              formatter: "#,##0.00"
+            }
           }
         ]
       };

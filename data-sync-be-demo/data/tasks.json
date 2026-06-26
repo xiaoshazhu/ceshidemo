@@ -1,17 +1,15 @@
 {
-  "platform": "qianniu",
-  "syncModule": "qianniu_fund_detail",
-  "shopIdParam": "499066699",
+  "platform": "jingmai",
+  "syncModule": "jingmai_finance",
+  "shopIdParam": "110266763006",
   "dateRange": "30",
   "fieldMappings": {
-    "record_time": "col_record_time",
-    "flow_id": "col_flow_id",
-    "order_id": "col_order_id",
-    "bill_type": "col_bill_type",
+    "id": "col_id",
+    "arrival_date": "col_arrival_date",
+    "billing_date": "col_billing_date",
     "income": "col_income",
-    "outcome": "col_outcome",
-    "biz_desc": "col_biz_desc",
-    "remark": "col_remark"
+    "expenditure": "col_expenditure",
+    "actual_settlement": "col_actual_settlement"
   },
   "refreshFrequency": "hour",
   "merchantUid": "7291551609760710657",
@@ -21,8 +19,8 @@
   "customEndDate": "",
   "accountInfo": {
     "mode": "模拟登录",
-    "name": "高原安旗舰店:财务 (ID: 499066699)",
-    "cookie": "t=505f83f5d8c282de4061a83e494bc62e; _tb_token_=ee1b7e5ea7b77; xlly_s=1; 3PcFlag=1782368660285; sn=%E9%AB%98%E5%8E%9F%E5%AE%89%E6%97%97%E8%88%B0%E5%BA%97%3A%E8%B4%A2%E5%8A%A1; _cc_=UtASsssmfA%3D%3D; cancelledSubSites=empty; csg=0827e12b; cna=M7fDIqbuPGQCAbaK7pzTtgtN; uc1=cookie14=UoYWPyfIEcBRNg%3D%3D&cookie21=Vq8l%2BKCLiYYu; isg=BJycKm5_GpOifO5P9rEOzEffbbxOFUA_XHqVSnad8gdqwT9LnCXkzpBiJyk5yXiX; mtop_partitioned_detect=1; _m_h5_tk=ec06106bee17597aae1667c7169c30fb_1782385078919; _m_h5_tk_enc=a5a3938060e68bd53d47ee85ad168d54; tfstk=hNMxN-gsEeHXCRKk9g4rCN2gC3Y3cAq_fcoNfrwjmdas-4wii5m_fR3SSnzmfEutBzgboSxqfGEsrzr4st201F3tJ5DmIAutB24yqevhcZJ4wRz6IRiHK90aCeYHEpmq0RuDCHusG_Z7zlBfcSg1FaZgPlZ_fVa7NkZhlRws50t8zlw_5Vw620azfRas5Vi5PhFXmpIk2rDAKw4IczimmYB3MyibyurrFRPxEv_hRawsGm08tjLdHjnjTVrIlZTY2xnKBXgWEtetVXMTFM5oI31N_IZy7wn7v3ahxuE8-npO_1Py4uUH2sCN_7-z2yxzJ15ag75..",
-    "shopId": "499066699"
+    "name": "京东商户结算中心 (ID: 110266763006)",
+    "cookie": "light_key=AASBKE7rOxgWQziEhC_QY6yaoikKGIUi6g-yhF3rLNHn4Eh0nwIESKfLiaZOxDHN7ac9USsZ; pin=gaoyuanan%E8%B4%A2%E5%8A%A1; unick=t23q65xb8xufv0; qyjr_user=9hTxqx6mWeJAQiRcR76BNfhPnQkb0zZq4mWRAPXiKLLIfXlb+g8UQU/FdqTP9D3R; qid_uid=87697327-a7af-490d-94be-7499511d885e; qid_fs=1782377026056; qid_ls=1782377026056; qid_ts=1782377026061; qid_vis=1; qid_sid=87697327-a7af-490d-94be-7499511d885e-1; qid_ad=ims.jdpay.com%7C%7Cjdt%7C%7C0; qid_seq=2; qid_evord=80; uuid=1XZffYp0fbYrl068w0W4MFerDU4eF1ca",
+    "shopId": "110266763006"
   }
 }

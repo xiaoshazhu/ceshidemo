@@ -22,7 +22,8 @@ const {
   getCapturedBuffer,
   clearCapturedBuffer,
   saveTask,
-  updateAccountModule
+  updateAccountModule,
+  detectPlatformByModule
 } = require("./database.js");
 
 const app = express();
@@ -176,18 +177,38 @@ app.post("/api/v1/connector/sources/login-capture", async (req, res) => {
     return res.status(400).json({ code: 400, message: "Cookie 凭证为空，无法保存" });
   }
 
+  // 智能分析平台
+  const platformKey = detectPlatformByModule(module);
+  const defaultShopName = shopName || (platformKey === 'jingmai' ? '京东商户结算中心' : platformKey === 'qianniu' ? '千牛工作台店铺' : '数据源店铺');
+
   const payload = {
     cookie: cookie,
     shopId: shopId || "",
-    shopName: shopName || "抖音电商罗盘店铺",
-    module: module || "order_report"
+    shopName: defaultShopName,
+    module: module || ""
   };
 
   try {
-    // 写入 SQLite 暂存
+    // 1. 写入 SQLite 暂存
     await saveCapturedBuffer(payload);
-    console.log("✅ [Cookie 拦截成功] 抖音登录凭证已注入 SQLite 暂存数据库:", payload);
-    res.status(200).json({ code: 0, message: "登录凭证已拦截成功并存入 .db 数据库" });
+    console.log("✅ [login-capture] 凭证已注入 SQLite 暂存数据库:", payload);
+
+    // 2. 持久化写入 accounts 表
+    const accountKey = `auto_${platformKey}_${shopId || 'default'}`;
+    await saveAccount({
+      key: accountKey,
+      name: `${defaultShopName} (ID: ${shopId || 'default'})`,
+      mode: '模拟登录',
+      status: '已连接',
+      cookie: cookie,
+      shopId: shopId || '',
+      is_active: 1,
+      module: module || '',
+      platform: platformKey
+    });
+    console.log(`✅ [login-capture] 凭证已同步持久化写入 accounts 表 (key=${accountKey}, platform=${platformKey})`);
+
+    res.status(200).json({ code: 0, message: "登录凭证已拦截且持久化保存成功" });
   } catch (e) {
     res.status(500).json({ code: 500, message: `写入暂存数据库出错: ${e.message}` });
   }
@@ -195,6 +216,7 @@ app.post("/api/v1/connector/sources/login-capture", async (req, res) => {
 
 /**
  * 功能描述：接收由浏览器一键书签直接提取的真实数据并持久化到本地 scratch JSON 缓存
+ * 同时将 Cookie 凭证同步持久化到 accounts 表中，以便后续多模块复用
  */
 app.post("/api/v1/connector/sources/data-capture", async (req, res) => {
   const { cookie, shopId, shopName, module, dataList } = req.body;
@@ -202,26 +224,58 @@ app.post("/api/v1/connector/sources/data-capture", async (req, res) => {
     return res.status(400).json({ code: 400, message: "Cookie 凭证为空" });
   }
 
+  // 根据模块智能判断平台归属
+  let platformKey = 'douyin';
+  if (module && module.startsWith('jingmai_')) platformKey = 'jingmai';
+  else if (module && module.startsWith('qianniu_')) platformKey = 'qianniu';
+  else if (module && module.startsWith('jushuitan_')) platformKey = 'jushuitan';
+  else if (module && module.startsWith('xiaohongshu_')) platformKey = 'xiaohongshu';
+  else if (module && module.startsWith('alimama_')) platformKey = 'alimama';
+
+  const defaultShopName = shopName || (platformKey === 'jingmai' ? '京东商户结算中心' : platformKey === 'qianniu' ? '千牛工作台店铺' : '数据源店铺');
+
   const payload = {
     cookie: cookie,
     shopId: shopId || "",
-    shopName: shopName || "千牛工作台店铺",
+    shopName: defaultShopName,
     module: module || "qianniu_fund_detail"
   };
 
   try {
-    const { saveCapturedBuffer } = require("./database.js");
+    const { saveCapturedBuffer, saveAccount } = require("./database.js");
+    // 1. 写入临时捕获暂存表（captured_buffer），供首次同步即时装配使用
     await saveCapturedBuffer(payload);
     console.log("✅ [data-capture] 凭证已注入 SQLite 暂存数据库:", payload);
 
+    // 2. 同时持久化写入 accounts 表，确保 Cookie 凭证能被后续多个模块复用
+    const accountKey = `auto_${platformKey}_${shopId || 'default'}`;
+    await saveAccount({
+      key: accountKey,
+      name: `${defaultShopName} (ID: ${shopId || 'default'})`,
+      mode: '模拟登录',
+      status: '已连接',
+      cookie: cookie,
+      shopId: shopId || '',
+      is_active: 1,
+      module: module || '',
+      platform: platformKey
+    });
+    console.log(`✅ [data-capture] 凭证已同步持久化写入 accounts 表 (key=${accountKey}, platform=${platformKey})`);
+
     if (Array.isArray(dataList) && dataList.length > 0) {
       const fs = require('fs');
-      const cachePath = '/Users/wangxun/.gemini/antigravity-ide/brain/471893df-480c-4f75-a67b-5d13cb419620/scratch/qianniu_cache.json';
+      let cacheFileName = 'qianniu_cache.json';
+      if (module === 'jushuitan_inventory') {
+        cacheFileName = 'jushuitan_cache.json';
+      } else if (module === 'jingmai_finance') {
+        cacheFileName = 'jingmai_cache.json';
+      }
+      const cachePath = `/Users/wangxun/.gemini/antigravity-ide/brain/471893df-480c-4f75-a67b-5d13cb419620/scratch/${cacheFileName}`;
       fs.writeFileSync(cachePath, JSON.stringify(dataList, null, 2), 'utf8');
       console.log(`✅ [data-capture] 成功将 ${dataList.length} 条真实数据写入本地缓存文件: ${cachePath}`);
     }
 
-    res.status(200).json({ code: 0, message: "数据及凭据接收成功！" });
+    res.status(200).json({ code: 0, message: "数据及凭据接收成功！Cookie 已持久化，可多模块复用。" });
   } catch (e) {
     res.status(500).json({ code: 500, message: `保存失败: ${e.message}` });
   }
@@ -238,18 +292,37 @@ app.get("/api/v1/connector/sources/login-capture-get", async (req, res) => {
     return res.status(400).send("<h1>错误：Cookie 凭证为空</h1>");
   }
 
+  // 智能分析平台
+  const platformKey = detectPlatformByModule(module);
+  const defaultShopName = shopName || (platformKey === 'jingmai' ? '京东商户结算中心' : platformKey === 'qianniu' ? '千牛工作台店铺' : '数据源店铺');
+
   const payload = {
     cookie: cookie,
     shopId: shopId || "",
-    shopName: shopName || "小红书/电商平台店铺",
-    module: module || "xiaohongshu_pugongying"
+    shopName: defaultShopName,
+    module: module || ""
   };
 
   try {
-    // 写入 SQLite 暂存
+    // 1. 写入 SQLite 暂存
     await saveCapturedBuffer(payload);
-    console.log("✅ [GET 凭证拦截成功] 登录凭证已注入 SQLite 暂存数据库:", payload);
-    
+    console.log("✅ [login-capture-get] 凭证已注入 SQLite 暂存数据库:", payload);
+
+    // 2. 持久化写入 accounts 表
+    const accountKey = `auto_${platformKey}_${shopId || 'default'}`;
+    await saveAccount({
+      key: accountKey,
+      name: `${defaultShopName} (ID: ${shopId || 'default'})`,
+      mode: '模拟登录',
+      status: '已连接',
+      cookie: cookie,
+      shopId: shopId || '',
+      is_active: 1,
+      module: module || '',
+      platform: platformKey
+    });
+    console.log(`✅ [login-capture-get] 凭证已同步持久化写入 accounts 表 (key=${accountKey}, platform=${platformKey})`);
+
     // 返回精致的玻璃拟态自动关闭成功确认页
     res.send(`
       <!DOCTYPE html>
